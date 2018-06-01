@@ -1,0 +1,2 @@
+# ALGRAPH
+Prim alghoritm representation
