@@ -12,37 +12,21 @@ public class Graph implements GraphOperations {
 	
 	private int currentNumberNodes;
 	private Stack<Integer> freeSpots = new Stack<Integer>(); 
+	/*
+	 * LinkedList
+	 * 
+	 */
 	private Integer [][] adjMatrix = new Integer [MAX_NODES][MAX_NODES];
 	
 	/*
 	 * Creates an empty graph(0 nodes)
 	 */
-	Graph() {
-		this.currentNumberNodes = 0;
-		for(int i = MAX_NODES-1; i >= 0; i--)
-			freeSpots.push(i);
-		this.adjMatrix = null;
+	Graph(int numberNodes) throws Exception {
+		randomGraph(numberNodes);
 	};
 	
-	/*
-	 * Creates a graph with n nodes(no connection).
-	 * Loop are forbidden. 
-	 */
-	Graph(int numberNodes) throws Exception{
-		//check number of nodes
-		if(MAX_NODES >= numberNodes)
-			this.currentNumberNodes = numberNodes;
-		else 
-			throw new Exception();
-		
-		for(int i = MAX_NODES-numberNodes-1; i >= 0; i--)
-			freeSpots.push(i);
-		
-		this.adjMatrix = null;		
-	};
 	
-
-	public Graph(int numberNodes, Boolean random) throws Exception{
+	public void randomGraph(int numberNodes) throws Exception{
 		//check number of nodes
 		if(MAX_NODES >= numberNodes)
 			this.currentNumberNodes = numberNodes;
