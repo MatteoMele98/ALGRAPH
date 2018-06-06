@@ -12,6 +12,10 @@ import algraph.utils.*;
 
 public class EdgeView extends Path{
 	  Group edge = new Group();
+	  
+	  public EdgeView() {
+		  
+	  }
 	 
 	  /*
 	   * crea una line da start(centro sp1) a end(centro sp2)

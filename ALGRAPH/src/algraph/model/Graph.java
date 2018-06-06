@@ -25,6 +25,11 @@ public class Graph implements GraphOperations {
 		randomGraph(numberNodes);
 	};
 	
+	/*
+	 * COSTRUTTORE CON N NODI SENZA ARCHI!!! <------------------------
+	 * 
+	 * 
+	 */
 	
 	public void randomGraph(int numberNodes) throws Exception{
 		//check number of nodes

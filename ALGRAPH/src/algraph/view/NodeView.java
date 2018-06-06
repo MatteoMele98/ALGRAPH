@@ -21,6 +21,10 @@ public class NodeView {
 	private Pane sp;
 	private Circle circle;
 	
+	public NodeView() {
+		
+	}
+	
 	/*
 	 * n = label of node
 	 * c = center of the node
