@@ -52,14 +52,23 @@ public class EdgeView extends Path{
             Circle c = new Circle();
             c.setCenterX(arrow.getEndX());
             c.setCenterY(arrow.getEndY());
-            c.setStroke(Color.BLACK);
+            c.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
             c.setRadius(5);
 
             edge.getChildren().add(arrow);
             edge.getChildren().add(c);
         }
-
-        public Group getEdge() {
-          	return this.edge;
-        }
+    
+      public void visiting() {
+    	  
+      }
+      
+      public void visited() {
+    	  
+      }
+      
+      	
+    public Group getEdge() {
+      	return this.edge;
+    }
 }

@@ -7,17 +7,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+
+import algraph.model.NodeModel;
 import algraph.utils.*;
 
 
 public class NodeView {
-	private int number;
-	//private Boolean exist
+	private int number; //indice del nodo
+	private Text label; //testo nel nodo
 	
-	
-	//private Integer value;
-	private Point p; //centro del nodo
-	private boolean col;
+	private Point center; //centro del nodo
 	private Pane sp;
 	private Circle circle;
 	
@@ -29,30 +28,29 @@ public class NodeView {
 	 * n = label of node
 	 * c = center of the node
 	 */
-	public NodeView(int n, Point c) {
-		this.number=n;
-		this.col=false;
-		this.p = c;
+	public NodeView(NodeModel node, Point center) {
+		this.number = node.getIndex();;
+		this.center = center;
 		
 		this.circle = new Circle(25,Color.WHITE);
-		circle.setCenterX(c.getX()+25);
-		circle.setCenterY(c.getY()+25);
-		circle.setStroke(Color.BLACK);
+		circle.setCenterX(center.getX()+25);
+		circle.setCenterY(center.getY()+25);
+		circle.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
 		circle.setStrokeWidth(4);
 		
-		Text t2 = new Text();
-	 	t2.setText(String.valueOf(this.number));
-	 	Font f2 = new Font("Arial",30);
-	 	t2.setFill(Color.BLACK);
-	 	t2.setFont(f2);
+		this.label.setText(node.getLabel());
+	 	Font font = new Font("Arial",30);
+	 	this.label.setFill(Color.BLACK);
+	 	this.label.setFont(font);
 	 	
 	 	this.sp = new StackPane();
 	 	this.sp.getChildren().add(circle);
-	 	this.sp.getChildren().add(t2);
-	 	sp.setLayoutX(c.getX());
-	 	sp.setLayoutY(c.getY());
+	 	this.sp.getChildren().add(this.label);
+	 	sp.setLayoutX(center.getX());
+	 	sp.setLayoutY(center.getY());
 	 	
 	}
+	
 	public Pane getDisegno() {
 		return this.sp;
 	}
@@ -61,20 +59,23 @@ public class NodeView {
 		return this.number;
 	}
 	
-	public void setCol(boolean c) {
-		this.col=c;
+	public void visiting() {
+		this.circle.setStroke(Color.rgb(0, 206, 201,1.0)); //verde
 	}
-	public boolean getCol() {
-		return this.col;
+	
+	public void visited() {
+		this.circle.setStroke(Color.rgb(231, 76, 60,1.0)); //rosso
 	}
+	
+	
 	public double getPosX() {
-		return this.p.getX();
+		return this.center.getX();
 	}
 	public double getPosY() {
-		return this.p.getY();
+		return this.center.getY();
 	}
 	public void setPosition(Point p2) {
-		this.p = p2;
+		this.center = p2;
 	}
 	public int getPosXCircle() {
 		return (int) this.circle.getCenterX();

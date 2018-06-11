@@ -1,22 +1,21 @@
 package algraph.view;
 
+import algraph.model.EdgeModel;
+import algraph.model.NodeModel;
 import algraph.utils.*;
 
 public class GraphView {
-	private static final int  MAX_NODES = 15;
-	private static final int  MIN_NODES = 3;
 	private static final int RADIUS = 25;
 	
 	private int currentNumberNodes = 0;
-	private NodeView nodes[]; //array dei nodi
-	private EdgeView edge[][]; //matrice archi
+	private NodeView nodes[];
+	private EdgeView edge[][]; 
+	
 	
 	/*
-	 * n = number nodes
-	 */
-	public GraphView (int n) {
+	public GraphView (int numberNodes) {
 		this.nodes = new NodeView[MAX_NODES];
-		this.currentNumberNodes = n;
+		this.currentNumberNodes = numberNodes;
 		
 		//crea grafo
 		for(int i = 0; i<MAX_NODES; i++) {
@@ -34,20 +33,34 @@ public class GraphView {
 				this.edge[i][z] = new EdgeView();
 		}
 	}
+	*/
 	
 	
 	/*
-	 * labeal is text inside the node
+	 * @param node = inserted node
 	 */		
-	public void insertNode(int position, int label) {
+	public void insertNode(NodeModel node) {
 		this.currentNumberNodes++;
-		Point coordinates = new Point(550+250*Math.cos(Math.PI*2*position/this.currentNumberNodes), 300-250*Math.sin(Math.PI*2*position/this.currentNumberNodes));
-		this.nodes[position] = new NodeView(position, coordinates);
+		Point center = new Point(550+250*Math.cos(Math.PI*2*node.getIndex()/this.currentNumberNodes), 300-250*Math.sin(Math.PI*2*node.getIndex()/this.currentNumberNodes));
+		this.nodes[node.getIndex()] = new NodeView(node, center);
 	}
 	
-	public void deleteNode(int position) {
+	/*
+	 * @param node = deleted node
+	 */
+	public void deleteNode(NodeModel node) {
 		this.currentNumberNodes--;
-		this.nodes[position] = null;
+		this.nodes[node.getIndex()] = null;
+	}
+	
+	/*
+	 * @param edge = inserted edge
+	 */
+	public void insertEdge(EdgeModel edge) {
+		Point centerStart = new Point(this.nodes[edge.getStartNode().getIndex()].getPosX(), this.nodes[edge.getStartNode().getIndex()].getPosY());
+		Point centerEnd = new Point(this.nodes[edge.getEndNode().getIndex()].getPosX(), this.nodes[edge.getEndNode().getIndex()].getPosY());
+		
+		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = new EdgeView(centerStart,centerEnd,RADIUS);			
 	}
 	
 	/*
@@ -62,8 +75,8 @@ public class GraphView {
 		this.edge[start][end] = new EdgeView(centerStart,centerEnd,RADIUS);			
 	}
 	
-	public void deleteEdge(int start, int end) {
-		this.edge[start][end] = null;			
+	public void deleteEdge(EdgeModel edge) {
+		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = null;			
 	}	
 	
 	public NodeView getNode(int n) {
