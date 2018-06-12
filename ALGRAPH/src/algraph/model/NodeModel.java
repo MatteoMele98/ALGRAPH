@@ -8,7 +8,7 @@ public class NodeModel implements Comparable<NodeModel> {
 	    return i > 0 && i < 27 ? String.valueOf((char)(i + 64)) : null;
 	}
 	
-	NodeModel(int number){
+	public NodeModel(int number){
 		this.index = number;
 		this.label = getCharForNumber(++number);
 	}

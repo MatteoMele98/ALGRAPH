@@ -12,6 +12,8 @@ import algraph.utils.*;
 
 public class EdgeView extends Path{
 	  Group edge = new Group();
+	  Line arrow;
+	  Circle pointer;
 	  
 	  public EdgeView() {
 		  
@@ -26,10 +28,10 @@ public class EdgeView extends Path{
             Point pos1 = CircleLine.getCircleLineIntersectionPoint(start,end, start, radius,0);
             Point pos2 = CircleLine.getCircleLineIntersectionPoint(start, end, end, radius,1);
 
-            Line arrow = new Line();
+            this.arrow = new Line();
             arrow.setStrokeLineJoin(StrokeLineJoin.MITER);
-            arrow.setStartX(pos1.getX()); 
-            arrow.setStartY(pos1.getY());
+            arrow.setStartX(pos1.getX()+25); 
+            arrow.setStartY(pos1.getY()+25);
 
 			Double radius1 = 10.0;
         	double	alphaAngle = Math.atan2(end.getY() - start.getY(), end.getX() - start.getX());
@@ -43,32 +45,34 @@ public class EdgeView extends Path{
         	if (start.getY() > end.getY())
         		offsetY *= -1;
         	
-        	arrow.setEndX(pos2.getX()-offsetX);
-        	arrow.setEndY(pos2.getY()-offsetY);
-        	arrow.setStroke(Color.BLACK);
+        	arrow.setEndX(pos2.getX()-offsetX+25);
+        	arrow.setEndY(pos2.getY()-offsetY+25);
+        	arrow.setStroke(Color.rgb(52, 73, 94,1.0));
         	arrow.setStrokeWidth(3);
         	
         	//pointer
-            Circle c = new Circle();
-            c.setCenterX(arrow.getEndX());
-            c.setCenterY(arrow.getEndY());
-            c.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
-            c.setRadius(5);
+            this.pointer = new Circle();
+            pointer.setCenterX(arrow.getEndX());
+            pointer.setCenterY(arrow.getEndY());
+            pointer.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
+            pointer.setRadius(5);
 
             edge.getChildren().add(arrow);
-            edge.getChildren().add(c);
+            edge.getChildren().add(pointer);
         }
     
       public void visiting() {
-    	  
+		this.arrow.setStroke(Color.rgb(0, 206, 201,1.0)); //verde
+		this.pointer.setStroke(Color.rgb(0, 206, 201,1.0));
       }
       
       public void visited() {
-    	  
+    	 this.arrow.setStroke(Color.rgb(231, 76, 60,1.0)); //rosso
+      	 this.pointer.setStroke(Color.rgb(231, 76, 60,1.0));
       }
       
       	
-    public Group getEdge() {
+    public Group printEdge() {
       	return this.edge;
     }
 }

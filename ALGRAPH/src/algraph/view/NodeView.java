@@ -20,16 +20,12 @@ public class NodeView {
 	private Pane sp;
 	private Circle circle;
 	
-	public NodeView() {
-		
-	}
-	
 	/*
 	 * n = label of node
 	 * c = center of the node
 	 */
 	public NodeView(NodeModel node, Point center) {
-		this.number = node.getIndex();;
+		this.number = node.getIndex();
 		this.center = center;
 		
 		this.circle = new Circle(25,Color.WHITE);
@@ -38,6 +34,7 @@ public class NodeView {
 		circle.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
 		circle.setStrokeWidth(4);
 		
+		this.label = new Text();
 		this.label.setText(node.getLabel());
 	 	Font font = new Font("Arial",30);
 	 	this.label.setFill(Color.BLACK);
@@ -51,7 +48,7 @@ public class NodeView {
 	 	
 	}
 	
-	public Pane getDisegno() {
+	public Pane printNode() {
 		return this.sp;
 	}
 	

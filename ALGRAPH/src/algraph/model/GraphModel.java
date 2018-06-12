@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Random;
 
 public class GraphModel {
-	private static final int  MAX_NODES = 15;
-	private static final int  MIN_NODES = 3;
+	public final int MAX_NODES = 15;
+	public final int MIN_NODES = 3;
 	
 	private static final int MAX_WEIGHT = 50;
 	private static final int MIN_WEIGHT = -50;
@@ -16,12 +16,17 @@ public class GraphModel {
 	/*
 	 * currentNodes and freeSpots memorize the INDEX of elements in increasing order.
 	 */
-	private ArrayList<NodeModel> currentNodes = new ArrayList<NodeModel>();
-	private ArrayList<NodeModel> freeSpots = new ArrayList<NodeModel>();
+	public ArrayList<NodeModel> currentNodes = new ArrayList<NodeModel>();
+	public ArrayList<NodeModel> freeSpots = new ArrayList<NodeModel>();
 	
 	private Integer [][] adjMatrix = new Integer [MAX_NODES][MAX_NODES];
 	
 	//==============================================================================
+	public GraphModel() {
+
+	}
+	
+	
 	/*
 	 * numberNodes = nodes of the graph. between 3 and 15.
 	 * random = if true call a graph constructor with random weights

@@ -5,7 +5,7 @@ public class EdgeModel {
 	private NodeModel endNode;
 	private Integer weight;
 	
-	EdgeModel(NodeModel u, NodeModel v, int w){
+	public EdgeModel(NodeModel u, NodeModel v, int w){
 		this.startNode = u;
 		this.endNode = v;
 		this.weight = w;

@@ -5,26 +5,33 @@ import algraph.model.NodeModel;
 import algraph.utils.*;
 
 public class GraphView {
+	public final int MAX_NODES = 15;
 	private static final int RADIUS = 25;
 	
 	private int currentNumberNodes = 0;
-	private NodeView nodes[];
-	private EdgeView edge[][]; 
+	public NodeView nodes[];
+	public EdgeView edge[][]; 
 	
 	
-	/*
+	public GraphView() {
+
+	}
+	
+	
+	
 	public GraphView (int numberNodes) {
 		this.nodes = new NodeView[MAX_NODES];
 		this.currentNumberNodes = numberNodes;
 		
 		//crea grafo
 		for(int i = 0; i<MAX_NODES; i++) {
-			if(i < n) {
-				Point coordinates = new Point(550+250*Math.cos(Math.PI*2*i/n), 300-250*Math.sin(Math.PI*2*i/n));
-				this.nodes[i] = new NodeView(i, coordinates);
+			if(i < numberNodes) {
+				Point coordinates = new Point(550+250*Math.cos(Math.PI*2*i/numberNodes), 300-250*Math.sin(Math.PI*2*i/numberNodes));
+				NodeModel tmp = new NodeModel(i);
+				this.nodes[i] = new NodeView(tmp, coordinates);
 			}
 			else
-				this.nodes[i] = new NodeView();
+				this.nodes[i] = null;
 		}
 	
 		this.edge = new EdgeView[MAX_NODES][MAX_NODES];
@@ -33,7 +40,7 @@ public class GraphView {
 				this.edge[i][z] = new EdgeView();
 		}
 	}
-	*/
+	
 	
 	
 	/*
@@ -79,12 +86,16 @@ public class GraphView {
 		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = null;			
 	}	
 	
+	public void deleteEdge(int start, int end) {
+		this.edge[start][end] = null;	
+	}
+	
 	public NodeView getNode(int n) {
 		return this.nodes[n];
 	}
 	
 	
-	public EdgeView getEdge(int n,int m) {
+	public EdgeView getEdge(int n, int m) {
 		return this.edge[n][m];
 	}
 }

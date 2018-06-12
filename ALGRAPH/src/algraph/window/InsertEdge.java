@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/*
 public class InsertEdge {
 	private static EdgeModel edge;
 	
@@ -19,17 +20,18 @@ public class InsertEdge {
 		window.setTitle("Inserisci arco");
 		window.setMinWidth(500);
 		window.setMinHeight(500);
-		
-//		/*
-//		 * scegli nodo u e v
-//		 */
-//		NodeModel start = new NodeModel(0);
-//		NodeModel end = new NodeModel(1);
-//		Button closeButton = new Button("CREA");
-//		closeButton.setOnAction(e -> {
-//			edge =  new EdgeModel(start,end,1);
-//			window.close();
-//		});
+*/		
+		/*
+		 * scegli nodo u e v
+		 */
+/*
+		NodeModel start = new NodeModel(0);
+		NodeModel end = new NodeModel(1);
+		Button closeButton = new Button("CREA");
+		closeButton.setOnAction(e -> {
+			edge =  new EdgeModel(start,end,1);
+			window.close();
+		});
 		
 		VBox layout = new VBox(35);
 		layout.getChildren().addAll(label, closeButton);
@@ -44,3 +46,4 @@ public class InsertEdge {
 		return edge;
 	}
 }
+*/
