@@ -15,10 +15,15 @@ import algraph.utils.*;
 public class NodeView {
 	private int number; //indice del nodo
 	private Text label; //testo nel nodo
+	Boolean isVisible;
 	
 	private Point center; //centro del nodo
 	private Pane sp;
 	private Circle circle;
+	
+	public NodeView() {
+		this.isVisible = false;
+	}
 	
 	/*
 	 * n = label of node
@@ -26,6 +31,7 @@ public class NodeView {
 	 */
 	public NodeView(NodeModel node, Point center) {
 		this.number = node.getIndex();
+		this.isVisible = true;
 		this.center = center;
 		
 		this.circle = new Circle(25,Color.WHITE);
@@ -35,7 +41,8 @@ public class NodeView {
 		circle.setStrokeWidth(4);
 		
 		this.label = new Text();
-		this.label.setText(node.getLabel());
+		this.label.setText(String.valueOf(node.getIndex()));
+//		this.label.setText(node.getLabel());
 	 	Font font = new Font("Arial",30);
 	 	this.label.setFill(Color.BLACK);
 	 	this.label.setFont(font);
@@ -66,13 +73,14 @@ public class NodeView {
 	
 	
 	public double getPosX() {
-		return this.center.getX();
+		return this.sp.getLayoutX();
 	}
 	public double getPosY() {
-		return this.center.getY();
+		return this.sp.getLayoutY();
 	}
 	public void setPosition(Point p2) {
-		this.center = p2;
+		this.sp.setLayoutX(p2.getX());
+		this.sp.setLayoutY(p2.getY());
 	}
 	public int getPosXCircle() {
 		return (int) this.circle.getCenterX();
@@ -80,6 +88,18 @@ public class NodeView {
 	
 	public int getPosYCircle() {
 		return (int) this.circle.getCenterY();
+	}
+
+	public Boolean getIsVisible() {
+		return isVisible;
+	}
+	
+	/*
+	 * @param isVisible, true iff the node will be printed
+	 * false otherwise
+	 */
+	public void setIsVisible(Boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 	
 }

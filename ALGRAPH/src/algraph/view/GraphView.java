@@ -9,6 +9,7 @@ public class GraphView {
 	private static final int RADIUS = 25;
 	
 	private int currentNumberNodes = 0;
+	private int visibleNodes = 0;
 	public NodeView nodes[];
 	public EdgeView edge[][]; 
 	
@@ -17,11 +18,31 @@ public class GraphView {
 
 	}
 	
+	/*
+	 * Update the nodes coordinates based on the visibleNodes.
+	 * Update edge based on the new nodes coordinates.
+	 */
+	private void coordinates() {
+		//update points coordinates
+		for(int i = 0; i < MAX_NODES && this.nodes[i].isVisible; i++) {
+			Point newCoord = new Point(550+250*Math.cos(Math.PI*2*i/this.visibleNodes), 300-250*Math.sin(Math.PI*2*i/this.visibleNodes));
+			this.nodes[i].setPosition(newCoord);
+		}
+		//update edges
+		for(int i = 0; i < this.currentNumberNodes; i++) {
+			for(int j = 0; j < this.currentNumberNodes; j++) {
+				if(this.getEdge(i, j) != null) {
+					this.insertEdge(i,j);
+				}
+			}
+		}
+	}
 	
 	
 	public GraphView (int numberNodes) {
 		this.nodes = new NodeView[MAX_NODES];
 		this.currentNumberNodes = numberNodes;
+		this.visibleNodes = numberNodes;
 		
 		//crea grafo
 		for(int i = 0; i<MAX_NODES; i++) {
@@ -31,13 +52,13 @@ public class GraphView {
 				this.nodes[i] = new NodeView(tmp, coordinates);
 			}
 			else
-				this.nodes[i] = null;
+				this.nodes[i] = new NodeView();
 		}
-	
+		
 		this.edge = new EdgeView[MAX_NODES][MAX_NODES];
 		for(int i=0; i<MAX_NODES; i++) {
 			for(int z=0; z<MAX_NODES; z++) 
-				this.edge[i][z] = new EdgeView();
+				this.edge[i][z] = null;
 		}
 	}
 	
@@ -48,8 +69,10 @@ public class GraphView {
 	 */		
 	public void insertNode(NodeModel node) {
 		this.currentNumberNodes++;
+		this.visibleNodes++;
 		Point center = new Point(550+250*Math.cos(Math.PI*2*node.getIndex()/this.currentNumberNodes), 300-250*Math.sin(Math.PI*2*node.getIndex()/this.currentNumberNodes));
 		this.nodes[node.getIndex()] = new NodeView(node, center);
+		this.coordinates();
 	}
 	
 	/*
@@ -57,7 +80,8 @@ public class GraphView {
 	 */
 	public void deleteNode(NodeModel node) {
 		this.currentNumberNodes--;
-		this.nodes[node.getIndex()] = null;
+		this.visibleNodes--;
+		this.nodes[node.getIndex()].setIsVisible(false);
 	}
 	
 	/*

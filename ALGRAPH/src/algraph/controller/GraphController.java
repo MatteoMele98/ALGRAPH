@@ -46,8 +46,6 @@ public class GraphController {
 			graphV.deleteEdge(deletedNode.getIndex(), i);
 		for(int j = 0; j < graphM.MAX_NODES; j++) 
 			graphV.deleteEdge(j,deletedNode.getIndex());
-		
-	
 	}
 	
 	public void insertEdge(EdgeModel newEdge) throws Exception {
