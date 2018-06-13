@@ -122,8 +122,8 @@ public class HomeController {
     	this.nodeToDelete.setText("");
     	this.print();
     	
-    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
-    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
+    	this.graphController.getGraphModel().printMatrix();
+    	
     }  	
 
     @FXML
@@ -217,16 +217,16 @@ public class HomeController {
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
     	this.graphController = new GraphController(10,true);
     	this.print();
-    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
-    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
+    	
+    	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
     void handleMenuItem_NodesGraph(ActionEvent event) throws NumberFormatException, Exception {
     	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false);
     	this.print();
-    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
-    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
+    	
+    	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
@@ -253,8 +253,8 @@ public class HomeController {
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	graphController.insertNode();
     	this.print();
-    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
-    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
+    	
+    	this.graphController.getGraphModel().printMatrix();
     }
 
     @FXML
@@ -274,6 +274,7 @@ public class HomeController {
     	}else {
     		/*restituisce un messaggio di errore*/
     	}
+    	this.graphController.getGraphModel().printMatrix();
     }
 /*    public static Void showPrefWindow(Event e) {
 

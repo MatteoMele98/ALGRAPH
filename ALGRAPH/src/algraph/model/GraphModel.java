@@ -11,8 +11,8 @@ public class GraphModel {
 	public final int MAX_NODES = 15;
 	public final int MIN_NODES = 3;
 	
-	private static final int MAX_WEIGHT = 50;
-	private static final int MIN_WEIGHT = -50;
+	private static final int MAX_WEIGHT = 15;
+	private static final int MIN_WEIGHT = -15;
 	
 	private int currentNumberNodes;
 	/*
@@ -165,10 +165,10 @@ public class GraphModel {
 			this.freeSpotsMap.remove(key);
 			this.currentNodesMap.put(key, newNode);
 			
-//			newNode = new NodeModel(this.freeSpots.get(0).getIndex());
-//			this.freeSpots.remove(0);
-//			this.currentNodes.add(newNode);
-//			Collections.sort(this.currentNodes);
+			for(int i = 0; i < MAX_NODES; i++) {
+				this.adjMatrix[newNode.getIndex()][i] = 0;
+				this.adjMatrix[i][newNode.getIndex()] = 0;
+			}
 		}
 		return newNode;
 	}
@@ -186,19 +186,6 @@ public class GraphModel {
 			
 			this.currentNodesMap.remove(node.getIndex());
 			this.freeSpotsMap.put(node.getIndex(), node);
-			
-			
-//			this.currentNodes.remove(node);
-//			ArrayList<NodeModel> tmp = new ArrayList<NodeModel>();
-//			for(int i = 0; i < this.currentNumberNodes; i++) {
-//				NodeModel temp = new NodeModel(this.currentNodes.get(i).getIndex());
-//				tmp.add(temp);
-//			}
-//			this.currentNodes = tmp;
-//			if(!this.freeSpots.contains(node)) {
-//				this.freeSpots.add(node);
-//				Collections.sort(this.freeSpots);
-//			}
 			
 			//remove all the edged from and to node
 			for(int i = 0; i < MAX_NODES; i++)
@@ -241,12 +228,6 @@ public class GraphModel {
 			s +=  node.getValue().getIndex() + "\t";
 //			s +=  node.getValue().getLabel() + "\t";
 		}
-		
-//		Iterator<NodeModel> nodes = this.getCurrentNodes();
-//		while(nodes.hasNext()) {
-//			NodeModel element = nodes.next();
-//			s += element.getIndex() + "\t";
-//		}
 		return s;
 	}
 	
@@ -257,12 +238,6 @@ public class GraphModel {
 			s +=  node.getValue().getIndex() + "\t";
 //			s +=  node.getValue().getLabel() + "\t";
 		}
-		
-//		Iterator<NodeModel> nodes = this.getCurrentNodes();
-//		while(nodes.hasNext()) {
-//			NodeModel element = nodes.next();
-//			s += element.getIndex() + "\t";
-//		}
 		return s;
 	}
 	
@@ -275,9 +250,9 @@ public class GraphModel {
  	public String textAdjNode(NodeModel node) {
 		String adj;
 		adj = "Node " + node.getLabel() + " = ";
-		for(int i = 0; i<MAX_NODES; i++) {
-			if(this.adjMatrix[node.getIndex()][i] != null)
-				adj += "{" + i + ",w = " + this.adjMatrix[node.getIndex()][i] + "}";
+		for(int j = 0; j<MAX_NODES; j++) {
+			if(this.adjMatrix[node.getIndex()][j] != null)
+				adj += "{" + j + ",w = " + this.adjMatrix[node.getIndex()][j] + "}";
 		}
 		return adj;
 	}
@@ -289,7 +264,7 @@ public class GraphModel {
 	 */
 	public String matrixAdjNode(NodeModel node) {
 		String adj;
-		adj = "Node " + node.getLabel() +"\t" +"| ";
+		adj = "Node " + node.getIndex() +"\t" +"| ";
 		for(int i = 0; i<MAX_NODES; i++) {
 			if(this.adjMatrix[node.getIndex()][i] == null)
 				adj += "\t"; 
@@ -313,8 +288,10 @@ public class GraphModel {
 	public void printMatrix() {
 		System.out.println("Current Nodes: " + this.getCurrentNodesString());
 		System.out.println("Free Spots   : " + this.getFreeSpotsString());
-		for(NodeModel index : currentNodes)
-			System.out.println(matrixAdjNode(index));
+		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
+			System.out.println(matrixAdjNode(node.getValue()));
+		}
+			
 	};
 	
 	

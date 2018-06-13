@@ -29,8 +29,8 @@ public class GraphView {
 			this.nodes[i].setPosition(newCoord);
 		}
 		//update edges
-		for(int i = 0; i < this.currentNumberNodes; i++) {
-			for(int j = 0; j < this.currentNumberNodes; j++) {
+		for(int i = 0; i < MAX_NODES; i++) {
+			for(int j = 0; j < MAX_NODES; j++) {
 				if(this.getEdge(i, j) != null) {
 					this.insertEdge(i,j);
 				}
@@ -82,6 +82,7 @@ public class GraphView {
 		this.currentNumberNodes--;
 		this.visibleNodes--;
 		this.nodes[node.getIndex()].setIsVisible(false);
+		this.coordinates();
 	}
 	
 	/*
