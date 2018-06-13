@@ -3,6 +3,7 @@ package algraph.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import algraph.controller.BoolItemController;
 import algraph.controller.GraphController;
 import algraph.model.NodeModel;
 
@@ -10,7 +11,7 @@ public class AlghoritmHandler {
 	private static final int PROGRAM_COUNTER_END = 10;
 	
 	private GraphController graphController;
-	//private BooleanController booleanController;
+	private BoolItemController booleanController;
 	//private ParentsController parentsController;
 	
 	private ArrayList<Boolean> visitedVect = new ArrayList<Boolean>();
