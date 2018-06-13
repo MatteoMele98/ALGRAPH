@@ -71,7 +71,8 @@ public class EdgeView extends Path{
       	 this.pointer.setStroke(Color.rgb(231, 76, 60,1.0));
       }
       
-      	
+   
+      
     public Group printEdge() {
       	return this.edge;
     }

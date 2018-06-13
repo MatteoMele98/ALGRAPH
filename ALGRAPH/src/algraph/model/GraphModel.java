@@ -3,7 +3,9 @@ package algraph.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class GraphModel {
 	public final int MAX_NODES = 15;
@@ -18,6 +20,8 @@ public class GraphModel {
 	 */
 	public ArrayList<NodeModel> currentNodes = new ArrayList<NodeModel>();
 	public ArrayList<NodeModel> freeSpots = new ArrayList<NodeModel>();
+	public TreeMap<Integer,NodeModel> currentNodesMap = new TreeMap<Integer,NodeModel>();
+	public TreeMap<Integer,NodeModel> freeSpotsMap = new TreeMap<Integer,NodeModel>();
 	
 	private Integer [][] adjMatrix = new Integer [MAX_NODES][MAX_NODES];
 	
@@ -53,18 +57,22 @@ public class GraphModel {
 		for(int i = 0; i < this.currentNumberNodes; i++) {
 			tmp = new NodeModel(i);
 			this.currentNodes.add(tmp);
+			this.currentNodesMap.put(i, tmp);
 		}
 		for(int j = this.currentNumberNodes; j < MAX_NODES; j++) {
 			tmp = new NodeModel(j);
 			this.freeSpots.add(tmp);
+			this.freeSpotsMap.put(j, tmp);
 		}
 		
 		
-		//set random weights to edges. Loops are forbidden
+		//set random weights to edges. Loops are forbidden. 
 		Random rand = new Random();
+		double percentage0;
 		for(int row = 0; row < this.currentNumberNodes; row++) {
 			for(int col = 0; col < this.currentNumberNodes; col++) {
-				if(row == col) this.adjMatrix[row][col] = 0;
+				percentage0 = Math.random();
+				if(row == col || (percentage0 < 0.4 || percentage0 > 0.7)) this.adjMatrix[row][col] = 0;
 				else {
 					int weight = rand.nextInt(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
 					this.adjMatrix[row][col] = weight;
@@ -85,10 +93,12 @@ public class GraphModel {
 		for(int i = 0; i < this.currentNumberNodes; i++) {
 			tmp = new NodeModel(i);
 			this.currentNodes.add(tmp);
+			this.currentNodesMap.put(i, tmp);
 		}
 		for(int j = this.currentNumberNodes; j < MAX_NODES; j++) {
 			tmp = new NodeModel(j);
 			this.freeSpots.add(tmp);
+			this.freeSpotsMap.put(j, tmp);
 		}
 		
 		//matrix[v][u] = 0, for all u,v. 
@@ -112,6 +122,7 @@ public class GraphModel {
 		if(edge.getStartNode() == edge.getEndNode()) throw new Exception();
 		if(edge.getWeight() > MAX_WEIGHT || edge.getWeight() < MIN_WEIGHT) throw new Exception();
 		if(this.freeSpots.contains(edge.getStartNode()) || this.freeSpots.contains(edge.getEndNode())) throw new Exception();
+		if(this.freeSpotsMap.containsKey(edge.getStartNode().getIndex()) || this.freeSpotsMap.containsKey(edge.getEndNode().getIndex())) throw new Exception();
 		
 		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
 	}
@@ -148,10 +159,16 @@ public class GraphModel {
 			throw new Exception();
 		else {
 			this.currentNumberNodes++;
-			newNode = new NodeModel(this.freeSpots.get(0).getIndex());
-			this.freeSpots.remove(0);
-			this.currentNodes.add(newNode);
-			Collections.sort(this.currentNodes);
+
+			Integer key = this.freeSpotsMap.firstKey();
+			newNode = new NodeModel(key);
+			this.freeSpotsMap.remove(key);
+			this.currentNodesMap.put(key, newNode);
+			
+//			newNode = new NodeModel(this.freeSpots.get(0).getIndex());
+//			this.freeSpots.remove(0);
+//			this.currentNodes.add(newNode);
+//			Collections.sort(this.currentNodes);
 		}
 		return newNode;
 	}
@@ -166,9 +183,22 @@ public class GraphModel {
 		if(this.freeSpots.contains(node)) throw new Exception();
 		else {
 			this.currentNumberNodes--;
-			this.currentNodes.remove(node.getIndex());
-			this.freeSpots.add(node);
-			Collections.sort(this.freeSpots);
+			
+			this.currentNodesMap.remove(node.getIndex());
+			this.freeSpotsMap.put(node.getIndex(), node);
+			
+			
+//			this.currentNodes.remove(node);
+//			ArrayList<NodeModel> tmp = new ArrayList<NodeModel>();
+//			for(int i = 0; i < this.currentNumberNodes; i++) {
+//				NodeModel temp = new NodeModel(this.currentNodes.get(i).getIndex());
+//				tmp.add(temp);
+//			}
+//			this.currentNodes = tmp;
+//			if(!this.freeSpots.contains(node)) {
+//				this.freeSpots.add(node);
+//				Collections.sort(this.freeSpots);
+//			}
 			
 			//remove all the edged from and to node
 			for(int i = 0; i < MAX_NODES; i++)
@@ -206,21 +236,33 @@ public class GraphModel {
 	
 	public String getCurrentNodesString() {
 		String s = "";
-		Iterator<NodeModel> nodes = this.getCurrentNodes();
-		while(nodes.hasNext()) {
-			NodeModel element = nodes.next();
-			s += element.getLabel() + "\t";
+		
+		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
+			s +=  node.getValue().getIndex() + "\t";
+//			s +=  node.getValue().getLabel() + "\t";
 		}
+		
+//		Iterator<NodeModel> nodes = this.getCurrentNodes();
+//		while(nodes.hasNext()) {
+//			NodeModel element = nodes.next();
+//			s += element.getIndex() + "\t";
+//		}
 		return s;
 	}
 	
 	public String getFreeSpotsString() {
 		String s = "";
-		Iterator<NodeModel> free = this.getFreeSpots();
-		while(free.hasNext()) {
-			NodeModel element = free.next();
-			s += element.getLabel() + "\t";
+		
+		for(Map.Entry<Integer, NodeModel> node : this.freeSpotsMap.entrySet()) {
+			s +=  node.getValue().getIndex() + "\t";
+//			s +=  node.getValue().getLabel() + "\t";
 		}
+		
+//		Iterator<NodeModel> nodes = this.getCurrentNodes();
+//		while(nodes.hasNext()) {
+//			NodeModel element = nodes.next();
+//			s += element.getIndex() + "\t";
+//		}
 		return s;
 	}
 	

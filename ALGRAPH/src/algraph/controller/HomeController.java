@@ -103,7 +103,7 @@ public class HomeController {
     private void print() {
     	this.graphPane.getChildren().clear();
     	for(int i=0; i < MAX_NODES; i++) {
-    		if(this.graphController.getGraphView().getNode(i)!=null) {
+    		if(this.graphController.getGraphView().getNode(i).getIsVisible()) {
     			this.graphPane.getChildren().add(this.graphController.getGraphView().getNode(i).printNode());
     		}
 			for(int j=0; j < MAX_NODES; j++) {
@@ -117,10 +117,13 @@ public class HomeController {
     @FXML
     void handleMenuDeleteNode(ActionEvent event) throws Exception {
     	NodeModel deletedNode = new NodeModel(Integer.parseInt(this.nodeToDelete.getText()));
+    	//NodeModel deletedNode = new NodeModel(this.nodeToDelete.getText());
     	graphController.deleteNode(deletedNode);
-    	
+    	this.nodeToDelete.setText("");
     	this.print();
-       	this.nodeToDelete.setText("");
+    	
+    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
+    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
     }  	
 
     @FXML
@@ -214,12 +217,16 @@ public class HomeController {
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
     	this.graphController = new GraphController(10,true);
     	this.print();
+    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
+    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
     }
     
     @FXML
     void handleMenuItem_NodesGraph(ActionEvent event) throws NumberFormatException, Exception {
     	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false);
     	this.print();
+    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
+    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
     }
     
     @FXML
@@ -246,6 +253,8 @@ public class HomeController {
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	graphController.insertNode();
     	this.print();
+    	System.out.println(this.graphController.getGraphModel().getCurrentNodesString());
+    	System.out.println(this.graphController.getGraphModel().getFreeSpotsString());
     }
 
     @FXML
