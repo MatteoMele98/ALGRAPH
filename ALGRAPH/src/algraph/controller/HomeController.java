@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import algraph.model.NodeModel;
 import algraph.view.GraphView;
 import javafx.event.ActionEvent;
@@ -108,6 +110,7 @@ public class HomeController {
     		}
 			for(int j=0; j < MAX_NODES; j++) {
 				if(this.graphController.getGraphView().getEdge(i, j) != null) {
+					this.graphController.getGraphView().getEdge(i, j).visited();
 					this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(i, j).printEdge());
 				}
 			}
@@ -116,8 +119,9 @@ public class HomeController {
     
     @FXML
     void handleMenuDeleteNode(ActionEvent event) throws Exception {
-    	NodeModel deletedNode = new NodeModel(Integer.parseInt(this.nodeToDelete.getText()));
-    	//NodeModel deletedNode = new NodeModel(this.nodeToDelete.getText());
+    	//NodeModel deletedNode = new NodeModel(Integer.parseInt(this.nodeToDelete.getText()));
+    	int c = this.nodeToDelete.getText().charAt(0);
+    	NodeModel deletedNode = new NodeModel(c-65);
     	graphController.deleteNode(deletedNode);
     	this.nodeToDelete.setText("");
     	this.print();
@@ -251,28 +255,39 @@ public class HomeController {
     
     @FXML
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
-    	graphController.insertNode();
-    	this.print();
-    	
-    	this.graphController.getGraphModel().printMatrix();
+    	if(graphController.getGraphModel().getCurrentNumberNodes() <= 14) {
+    	 	graphController.insertNode();
+        	this.print();
+        	
+        	this.graphController.getGraphModel().printMatrix();
+    	} else 
+    		JOptionPane.showMessageDialog(null,"Puoi inserire al massimo 15 nodi!");
+   
     }
 
     @FXML
     void handleMenuItem_InsertEdge(ActionEvent event) throws Exception {
-    	if(this.nodeOne.getText().length()!=0 && this.nodeTwo.getText().length()!=0 && this.peso.getText().length()!=0) {
-    		NodeModel start = new NodeModel(Integer.parseInt(this.nodeOne.getText()));
-    		NodeModel end = new NodeModel(Integer.parseInt(this.nodeTwo.getText()));
+    	if(this.nodeOne.getText().length() == 0 || this.nodeTwo.getText().length() == 0 || this.peso.getText().length() == 0)
+    		JOptionPane.showMessageDialog(null,"Impossibile inserire arco.");
+    	else {
+    		NodeModel start = new NodeModel(this.nodeOne.getText().charAt(0)-65);
+    		NodeModel end = new NodeModel(this.nodeTwo.getText().charAt(0)-65);
     		int weight = Integer.parseInt(this.peso.getText());
-    		EdgeModel newEdge = new EdgeModel(start,end,weight);
-    		
-    		graphController.insertEdge(newEdge);
-    		   		
-    		this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
-    		this.nodeOne.setText("");
-    		this.nodeTwo.setText("");
-    		this.peso.setText("");
-    	}else {
-    		/*restituisce un messaggio di errore*/
+    	
+			if(!graphController.getGraphModel().currentNodesMap.containsKey(start.getIndex()) || !graphController.getGraphModel().currentNodesMap.containsKey(end.getIndex()))
+					JOptionPane.showMessageDialog(null,"Nodo non esistente.");
+			else if(weight > 15 || weight < -15 )
+					JOptionPane.showMessageDialog(null,"Inserire un peso da 15 a -15.");
+			else {
+				EdgeModel newEdge = new EdgeModel(start,end,weight);
+	    		
+	    		graphController.insertEdge(newEdge);
+	    		   		
+	    		this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
+	    		this.nodeOne.setText("");
+	    		this.nodeTwo.setText("");
+        		this.peso.setText("");
+    		}
     	}
     	this.graphController.getGraphModel().printMatrix();
     }

@@ -64,13 +64,14 @@ public class EdgeView extends Path{
       public void visiting() {
 		this.arrow.setStroke(Color.rgb(0, 206, 201,1.0)); //verde
 		this.pointer.setStroke(Color.rgb(0, 206, 201,1.0));
+		this.pointer.setFill(Color.rgb(0, 206, 201,1.0));
       }
       
       public void visited() {
     	 this.arrow.setStroke(Color.rgb(231, 76, 60,1.0)); //rosso
       	 this.pointer.setStroke(Color.rgb(231, 76, 60,1.0));
-      }
-      
+      	 this.pointer.setFill(Color.rgb(231, 76, 60,1.0));
+      }  
    
       
     public Group printEdge() {

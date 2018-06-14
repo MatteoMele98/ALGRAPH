@@ -119,11 +119,10 @@ public class GraphModel {
 	 * - MIN_WEIGHT < w < MAX_WEIGHT
 	 */
 	public void insertEdge(EdgeModel edge) throws Exception {
-		if(edge.getStartNode() == edge.getEndNode()) throw new Exception();
-		if(edge.getWeight() > MAX_WEIGHT || edge.getWeight() < MIN_WEIGHT) throw new Exception();
-		if(this.freeSpots.contains(edge.getStartNode()) || this.freeSpots.contains(edge.getEndNode())) throw new Exception();
-		if(this.freeSpotsMap.containsKey(edge.getStartNode().getIndex()) || this.freeSpotsMap.containsKey(edge.getEndNode().getIndex())) throw new Exception();
-		
+//		if(edge.getStartNode() == edge.getEndNode()) throw new Exception();
+//		if(edge.getWeight() > MAX_WEIGHT || edge.getWeight() < MIN_WEIGHT) throw new Exception();
+//		if(this.freeSpots.contains(edge.getStartNode()) || this.freeSpots.contains(edge.getEndNode())) throw new Exception();
+//		if(this.freeSpotsMap.containsKey(edge.getStartNode().getIndex()) || this.freeSpotsMap.containsKey(edge.getEndNode().getIndex())) throw new Exception();
 		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
 	}
 	
@@ -180,7 +179,7 @@ public class GraphModel {
 	 */
 	public void deleteNode(NodeModel node) throws Exception {
 		if(this.currentNumberNodes == MIN_NODES) throw new Exception();
-		if(this.freeSpots.contains(node)) throw new Exception();
+		if(this.freeSpotsMap.containsKey(node.getIndex())) throw new Exception();
 		else {
 			this.currentNumberNodes--;
 			

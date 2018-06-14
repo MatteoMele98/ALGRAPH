@@ -82,7 +82,7 @@ public class GraphView {
 		this.currentNumberNodes--;
 		this.visibleNodes--;
 		this.nodes[node.getIndex()].setIsVisible(false);
-		this.coordinates();
+//		this.coordinates();
 	}
 	
 	/*
