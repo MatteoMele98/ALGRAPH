@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import algraph.view.BoolItem;
 
 
-public class BoolItemController {
-	//private BoolItem boolItem[]=new BoolItem[15];
+public class VisitedController {
 	private ArrayList<BoolItem> boolItem;
 	
-	public BoolItemController() {
+	public VisitedController() {
 		this.boolItem = new ArrayList<BoolItem>();
 	}
 	

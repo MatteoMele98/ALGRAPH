@@ -82,7 +82,6 @@ public class GraphView {
 		this.currentNumberNodes--;
 		this.visibleNodes--;
 		this.nodes[node.getIndex()].setIsVisible(false);
-//		this.coordinates();
 	}
 	
 	/*
@@ -119,8 +118,17 @@ public class GraphView {
 		return this.nodes[n];
 	}
 	
+	public NodeView getNode(NodeModel u) {
+		return this.nodes[u.getIndex()];
+	}
 	
-	public EdgeView getEdge(int n, int m) {
-		return this.edge[n][m];
+	public EdgeView getEdge(int u, int v) {
+		return this.edge[u][v];
+	}
+	
+	public EdgeView getEdge(NodeModel u, NodeModel v) {
+		if(this.edge[u.getIndex()][v.getIndex()] != null) 
+			return this.edge[u.getIndex()][v.getIndex()];
+		else return null;		
 	}
 }

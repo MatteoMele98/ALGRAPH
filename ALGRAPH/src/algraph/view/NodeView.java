@@ -20,6 +20,7 @@ public class NodeView {
 	private Point center; //centro del nodo
 	private Pane sp;
 	private Circle circle;
+	private Color color;
 	
 	public NodeView() {
 		this.isVisible = false;
@@ -33,11 +34,12 @@ public class NodeView {
 		this.number = node.getIndex();
 		this.isVisible = true;
 		this.center = center;
+		this.color = Colors.DEFAULT;
 		
 		this.circle = new Circle(25,Color.WHITE);
 		circle.setCenterX(center.getX()+25);
 		circle.setCenterY(center.getY()+25);
-		circle.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
+		circle.setStroke(this.color); //nero
 		circle.setStrokeWidth(4);
 		
 		this.label = new Text();
@@ -63,12 +65,13 @@ public class NodeView {
 		return this.number;
 	}
 	
-	public void visiting() {
-		this.circle.setStroke(Color.rgb(0, 206, 201,1.0)); //verde
+	public void switchColor(Color newColor) {
+		this.circle.setStroke(newColor);
+		this.color = newColor;
 	}
 	
-	public void visited() {
-		this.circle.setStroke(Color.rgb(231, 76, 60,1.0)); //rosso
+	public Color getColor() {
+		return this.color;
 	}
 	
 	

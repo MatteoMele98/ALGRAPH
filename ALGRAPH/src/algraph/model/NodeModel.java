@@ -1,6 +1,6 @@
 package algraph.model;
 
-public class NodeModel {
+public class NodeModel implements Comparable<NodeModel> {
 	private int index;
 	private String label;
 	
@@ -8,20 +8,11 @@ public class NodeModel {
 	    return i > 0 && i < 27 ? String.valueOf((char)(i + 64)) : null;
 	}
 	
-	private Integer getNumberForChar(String c) {
-		return (Integer.parseInt(c) - 65);
-	}
-	
 	public NodeModel(int number){
 		this.index = number;
 		this.label = getCharForNumber(++number);
 	}
-	
-	public NodeModel(String c) {
-		this.index = getNumberForChar(c);
-		this.label = c;
-	}
-	
+		
 	public String getLabel() {
 		return label;
 	}
@@ -36,4 +27,8 @@ public class NodeModel {
 		this.index = number;
 	}
 
+	@Override
+	public int compareTo(NodeModel node2) {
+		return this.index - node2.getIndex();
+	}
 }

@@ -47,31 +47,25 @@ public class EdgeView extends Path{
         	
         	arrow.setEndX(pos2.getX()-offsetX+25);
         	arrow.setEndY(pos2.getY()-offsetY+25);
-        	arrow.setStroke(Color.rgb(52, 73, 94,1.0));
+        	arrow.setStroke(Colors.DEFAULT);
         	arrow.setStrokeWidth(3);
         	
         	//pointer
             this.pointer = new Circle();
             pointer.setCenterX(arrow.getEndX());
             pointer.setCenterY(arrow.getEndY());
-            pointer.setStroke(Color.rgb(52, 73, 94,1.0)); //nero
+            pointer.setStroke(Colors.DEFAULT); //nero
             pointer.setRadius(5);
 
             edge.getChildren().add(arrow);
             edge.getChildren().add(pointer);
         }
-    
-      public void visiting() {
-		this.arrow.setStroke(Color.rgb(0, 206, 201,1.0)); //verde
-		this.pointer.setStroke(Color.rgb(0, 206, 201,1.0));
-		this.pointer.setFill(Color.rgb(0, 206, 201,1.0));
-      }
       
-      public void visited() {
-    	 this.arrow.setStroke(Color.rgb(231, 76, 60,1.0)); //rosso
-      	 this.pointer.setStroke(Color.rgb(231, 76, 60,1.0));
-      	 this.pointer.setFill(Color.rgb(231, 76, 60,1.0));
-      }  
+      public void switchColor(Color newColor) {
+    	 this.arrow.setStroke(newColor); //rosso
+       	 this.pointer.setStroke(newColor);
+       	 this.pointer.setFill(newColor);
+      }
    
       
     public Group printEdge() {

@@ -1,6 +1,5 @@
 package algraph.controller;
 
-import java.util.Iterator;
 
 import algraph.model.EdgeModel;
 import algraph.model.GraphModel;
@@ -12,6 +11,12 @@ public class GraphController {
 	private GraphView graphV;
 	
 	//=========================================================================
+	public GraphController() {
+		graphM = null;
+		graphV = null;
+	}
+	
+	
 	public GraphController (int numberNodes, Boolean random) throws Exception {
 		if(random) {
 			graphM = new GraphModel(numberNodes,true);

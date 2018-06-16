@@ -1,11 +1,12 @@
 package algraph.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
+
+import javax.swing.JOptionPane;
+
+import java.util.Random;
 
 public class GraphModel {
 	public final int MAX_NODES = 15;
@@ -15,15 +16,15 @@ public class GraphModel {
 	private static final int MIN_WEIGHT = -15;
 	
 	private int currentNumberNodes;
-	/*
-	 * currentNodes and freeSpots memorize the INDEX of elements in increasing order.
-	 */
-	public ArrayList<NodeModel> currentNodes = new ArrayList<NodeModel>();
-	public ArrayList<NodeModel> freeSpots = new ArrayList<NodeModel>();
 	public TreeMap<Integer,NodeModel> currentNodesMap = new TreeMap<Integer,NodeModel>();
 	public TreeMap<Integer,NodeModel> freeSpotsMap = new TreeMap<Integer,NodeModel>();
 	
 	private Integer [][] adjMatrix = new Integer [MAX_NODES][MAX_NODES];
+	
+	//solo archi entranti o nodi isolati
+	public ArrayList<NodeModel> noLinkedNode = new ArrayList<NodeModel>();
+	//solo archi uscenti
+	public ArrayList<NodeModel> allExitEdge = new ArrayList<NodeModel>();
 	
 	//==============================================================================
 	public GraphModel() {
@@ -56,12 +57,10 @@ public class GraphModel {
 		NodeModel tmp;
 		for(int i = 0; i < this.currentNumberNodes; i++) {
 			tmp = new NodeModel(i);
-			this.currentNodes.add(tmp);
 			this.currentNodesMap.put(i, tmp);
 		}
 		for(int j = this.currentNumberNodes; j < MAX_NODES; j++) {
 			tmp = new NodeModel(j);
-			this.freeSpots.add(tmp);
 			this.freeSpotsMap.put(j, tmp);
 		}
 		
@@ -92,12 +91,10 @@ public class GraphModel {
 		NodeModel tmp;
 		for(int i = 0; i < this.currentNumberNodes; i++) {
 			tmp = new NodeModel(i);
-			this.currentNodes.add(tmp);
 			this.currentNodesMap.put(i, tmp);
 		}
 		for(int j = this.currentNumberNodes; j < MAX_NODES; j++) {
 			tmp = new NodeModel(j);
-			this.freeSpots.add(tmp);
 			this.freeSpotsMap.put(j, tmp);
 		}
 		
@@ -118,11 +115,7 @@ public class GraphModel {
 	 * - u != v
 	 * - MIN_WEIGHT < w < MAX_WEIGHT
 	 */
-	public void insertEdge(EdgeModel edge) throws Exception {
-//		if(edge.getStartNode() == edge.getEndNode()) throw new Exception();
-//		if(edge.getWeight() > MAX_WEIGHT || edge.getWeight() < MIN_WEIGHT) throw new Exception();
-//		if(this.freeSpots.contains(edge.getStartNode()) || this.freeSpots.contains(edge.getEndNode())) throw new Exception();
-//		if(this.freeSpotsMap.containsKey(edge.getStartNode().getIndex()) || this.freeSpotsMap.containsKey(edge.getEndNode().getIndex())) throw new Exception();
+	public void insertEdge(EdgeModel edge) {
 		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
 	}
 	
@@ -134,21 +127,26 @@ public class GraphModel {
 	 * - u != v
 	 * - if u or v don't exist
 	 */
-	public void deleteEdge(EdgeModel edge) throws Exception {
-		if(edge.getStartNode() == edge.getEndNode()) throw new Exception();
-		if(this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] == null) throw new Exception();
-		
-		this.adjMatrix[edge.getStartNode().getIndex()][edge.getStartNode().getIndex()] = 0;
+	public void deleteEdge(EdgeModel edge) {		
+		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = 0;
 	}
 
+	public Integer[][] getMatrix(){
+		return this.adjMatrix;
+	}
+	
 	
 	/*
 	 * @param u = start node
 	 * @param v = end node
 	 * return the weight of u->v edge. null if it doesn't exits.
 	 */
-	public Integer getEdge(int u, int v) {
+	public Integer getWeight(int u, int v) {
 		return this.adjMatrix[u][v];
+	}
+	
+	public Integer getWeight(NodeModel u,NodeModel v) {
+		return this.adjMatrix[u.getIndex()][v.getIndex()];
 	}
 
 
@@ -164,7 +162,7 @@ public class GraphModel {
 			this.freeSpotsMap.remove(key);
 			this.currentNodesMap.put(key, newNode);
 			
-			for(int i = 0; i < MAX_NODES; i++) {
+			for(int i = 0; i < this.currentNumberNodes; i++) {
 				this.adjMatrix[newNode.getIndex()][i] = 0;
 				this.adjMatrix[i][newNode.getIndex()] = 0;
 			}
@@ -200,32 +198,30 @@ public class GraphModel {
 	 * @return true iff exists edge from u to v
 	 */
 	public boolean areConnected(int u, int v) {
-		if(this.adjMatrix[u][v] == 0 || 
-		this.adjMatrix[u][v ] == null) return false;
+		boolean areConnected = true;		
+		if(this.adjMatrix[u][v] == 0 || this.adjMatrix[u][v ] == null)
+			areConnected = false;
+		return areConnected;
+	}
+
+	public boolean areConnected(NodeModel u, NodeModel v) {
+		boolean areConnected = true;		
+		if(u == null || v == null || u == v || this.adjMatrix[u.getIndex()][v.getIndex()] == 0 || this.adjMatrix[u.getIndex()][v.getIndex()] == null)
+			areConnected = false;
 		
-		else return true;
+		return areConnected;
 	}
 
 	public int getCurrentNumberNodes() {
 		return this.currentNumberNodes;
 	}
 	
-	//====================================================================================
-	
-	public Iterator<NodeModel> getCurrentNodes(){
-		return this.currentNodes.iterator();
-	}
-	
-	public Iterator<NodeModel> getFreeSpots(){
-		return this.freeSpots.iterator();
-	}
-	
+	//====================================================================================	
 	public String getCurrentNodesString() {
 		String s = "";
 		
 		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
-			s +=  node.getValue().getIndex() + "\t";
-//			s +=  node.getValue().getLabel() + "\t";
+			s +=  node.getValue().getLabel() + "\t";
 		}
 		return s;
 	}
@@ -234,8 +230,7 @@ public class GraphModel {
 		String s = "";
 		
 		for(Map.Entry<Integer, NodeModel> node : this.freeSpotsMap.entrySet()) {
-			s +=  node.getValue().getIndex() + "\t";
-//			s +=  node.getValue().getLabel() + "\t";
+			s +=  node.getValue().getLabel() + "\t";
 		}
 		return s;
 	}
@@ -259,16 +254,14 @@ public class GraphModel {
 	/*
 	 * /* @param node = selected node
 	 * return the adjacency of node
-	 * ES. node 1 = {2,w = 1}{3,w = 8}{4,w = -3}{6,w = 4}{7,w = 5}
+	 * ES. 
 	 */
 	public String matrixAdjNode(NodeModel node) {
 		String adj;
 		adj = "Node " + node.getIndex() +"\t" +"| ";
 		for(int i = 0; i<MAX_NODES; i++) {
-			if(this.adjMatrix[node.getIndex()][i] == null)
-				adj += "\t"; 
-			else
-				adj += this.adjMatrix[node.getIndex()][i] + "\t";
+			if(this.adjMatrix[node.getIndex()][i] != null)
+				adj += "\t" + this.adjMatrix[node.getIndex()][i] + "\t|";
 		}
 		return adj;
 	}
@@ -280,18 +273,108 @@ public class GraphModel {
 	public void printAdj() {
 		System.out.println("Current Nodes: " + this.getCurrentNodesString());
 		System.out.println("Free Spots   : " + this.getFreeSpotsString());
-		for(NodeModel index : currentNodes)
-			System.out.println(textAdjNode(index));
-	};
-	
-	public void printMatrix() {
-		System.out.println("Current Nodes: " + this.getCurrentNodesString());
-		System.out.println("Free Spots   : " + this.getFreeSpotsString());
 		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
-			System.out.println(matrixAdjNode(node.getValue()));
+			System.out.println(textAdjNode(node.getValue()));
 		}
-			
 	};
 	
+	public StringBuilder printMatrix() {
+		StringBuilder s = new StringBuilder();
+
+		String n="\t\t";
+		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
+			n +="| Node " +  node.getValue().getLabel() + "\t";
+		}
+		
+		n+='|';
+		s.append("Current Nodes: " + this.getCurrentNodesString());
+		s.append('\n');
+		s.append("Free Spots   : " + this.getFreeSpotsString());
+		s.append("\n\n");
+		s.append(n);
+		s.append("\n");
+		n="";
+		
+		for(int i = 0; i < this.currentNodesMap.size(); i++)
+			n +="____________";
+		
+		s.append(n);
+		s.append("\n");
+		for(Map.Entry<Integer, NodeModel> node : this.currentNodesMap.entrySet()) {
+			s.append(matrixAdjNode(node.getValue()));
+			s.append('\n');
+		}
+		return s;
+	}
 	
+	public boolean isConnected(int n) {
+		int size = this.currentNodesMap.size();
+		int visited[] = new int[size];
+		int nodeNc[] = new int[size];//contiene i nodi non connessi
+		
+		for(int row=0; row < size; row++) {
+			for(int col=0; col < size; col++){
+				if(this.adjMatrix[row][col]!=0 && visited[row]==0) {
+					visited[row] = 1;
+					//System.out.println("new visit");
+				}
+			}
+		}
+		//visited contiene 0 oppure 1
+		//se contiene 0 in posizione i significa che il nodo i non ha archi uscenti
+		//se contiene 1 in posizione i significa che il nodo i ha archi uscenti (almeno uno, ma può averne più di uno)
+
+		boolean connected = false;
+
+		for (int vertex = 1; vertex < size; vertex++){
+			if (visited[vertex] == 1) connected = true;
+			else{
+				nodeNc[vertex]=vertex;
+				connected = false;
+			}
+		}
+		
+		//dobbiamo fare il caso in cui un nodo contenga solo un arco uscente.
+		//in questo caso dobbiamo far partire l'algoritmo da questo nodo.
+		boolean uscenti[]=new boolean[size];
+		if(connected){
+			//dobbiamo vedere se c'è qualche nodo con soli archi uscenti
+			for(int row=0; row < size; row++) {
+				
+				uscenti[row]=true;
+				for(int col=0; col < size; col++){
+					if(this.adjMatrix[col][row]==0){
+						uscenti[row]=uscenti[row] && true;
+					}else{
+						uscenti[row]=uscenti[row] && false;
+					}
+					if(this.adjMatrix[row][col]!=0 && visited[row]==0) {
+						visited[row] = 1;
+						//System.out.println("new visit");
+					}
+				}
+			}
+		}
+		String allExitNode="";
+		String noLinkedNode="";
+		for(Integer i=0; i<size; i++){
+			if(uscenti[i]){
+				NodeModel tmp=new NodeModel(i);
+				this.allExitEdge.add(tmp);
+				allExitNode +=' '+i.toString()+',';
+			}
+			if(nodeNc[i]!=0){
+				NodeModel tmp = new NodeModel(i);
+				this.noLinkedNode.add(tmp);
+				noLinkedNode +=' '+i.toString()+',';
+			}
+		}
+		if(allExitNode!="")JOptionPane.showMessageDialog(null,"Attenzione: devi partire necessariamente dal nodo" + allExitNode);
+		if(noLinkedNode!="")JOptionPane.showMessageDialog(null,"Attenzione: NON devi partire dal nodo"+noLinkedNode);
+
+		return (connected);
+	}
+			
 }
+	
+	

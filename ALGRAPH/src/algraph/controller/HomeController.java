@@ -1,19 +1,24 @@
 package algraph.controller;
 
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
 import algraph.model.NodeModel;
+import algraph.service.AlgorithmHandler;
+import algraph.utils.Colors;
 import algraph.view.GraphView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitMenuButton;
@@ -32,7 +37,28 @@ public class HomeController {
 	private static final int MAX_NODES = 15;
 
 	private GraphController graphController;
+	private PriorityController priorityController;
+	private VisitedController visitedController;
 	
+	private AlgorithmHandler algorithmHandler;
+	
+	private boolean pendingExecution;
+	//====================================================
+	
+//	public HomeController() throws Exception {
+//		this.graphController = new GraphController();
+//		this.visitedController = new VisitedController();
+//		this.priorityController = new PriorityController();
+//		
+//		/*
+//		 * add alg handler
+//		 * 
+//		 */
+//	}
+	
+	public void algorithmHandlerGenerator() {
+		this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
+	}
 
     @FXML
     private TextField nodeToDelete;
@@ -46,8 +72,6 @@ public class HomeController {
     @FXML
     private URL location;
 
-    @FXML
-    private SplitMenuButton splitMenuItem;
 
     @FXML
     private MenuItem runMenuItem;
@@ -95,40 +119,75 @@ public class HomeController {
     
     private File selectedFile;
     private Scanner scanner;
-    void handleLineOn(MouseEvent event) {
-    	
-    }
+    
+    @FXML
+    private ComboBox deleteComboBox;
+    
+    @FXML
+    private ComboBox edgeCBoxOne;
+
+    @FXML
+    private ComboBox edgeCBoxTwo;
+
+    @FXML
+    private ComboBox startComboBox1;
+
+    @FXML
+    private ComboBox startComboBox3;
+
+    @FXML
+    private ComboBox edgeDBox1;
+
+    @FXML
+    private ComboBox edgeDBox2;
     
     /*
      * print the entire updated graph
      */
     private void print() {
     	this.graphPane.getChildren().clear();
-    	for(int i=0; i < MAX_NODES; i++) {
-    		if(this.graphController.getGraphView().getNode(i).getIsVisible()) {
-    			this.graphPane.getChildren().add(this.graphController.getGraphView().getNode(i).printNode());
-    		}
-			for(int j=0; j < MAX_NODES; j++) {
-				if(this.graphController.getGraphView().getEdge(i, j) != null) {
-					this.graphController.getGraphView().getEdge(i, j).visited();
-					this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(i, j).printEdge());
-				}
-			}
-    	}
+    	this.vBoxVisited.getChildren().clear();
+    	this.vBoxParents.getChildren().clear();
+    	for(Integer i=0; i < MAX_NODES; i++) {
+            if (this.graphController.getGraphView().getNode(i).getIsVisible()) {
+                this.graphPane.getChildren().add(this.graphController.getGraphView().getNode(i).printNode());
+//                this.vBoxVisited.getChildren().add(this.visitedController.getBoolItem(i).printBoolItem());
+//                this.vBoxParents.getChildren().add(this.priorityController.getPriorityItem(i).printPriorityItem());
+            }
+            for (int j = 0; j < MAX_NODES; j++) {
+                if (this.graphController.getGraphView().getEdge(i, j) != null) {
+                    this.graphController.getGraphView().getEdge(i, j);
+                    this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(i, j).printEdge());
+                }
+            }
+        }
+
+        this.outputTextArea1.setText(this.graphController.getGraphModel().printMatrix().toString());
     }
     
-    @FXML
-    void handleMenuDeleteNode(ActionEvent event) throws Exception {
-    	//NodeModel deletedNode = new NodeModel(Integer.parseInt(this.nodeToDelete.getText()));
-    	int c = this.nodeToDelete.getText().charAt(0);
-    	NodeModel deletedNode = new NodeModel(c-65);
-    	graphController.deleteNode(deletedNode);
-    	this.nodeToDelete.setText("");
-    	this.print();
-    	
-    	this.graphController.getGraphModel().printMatrix();
-    	
-    }  	
+    /*
+     * Init the comboBox only with the current nodes.
+     */
+    private void initComboBox(){
+        this.deleteComboBox.getItems().clear();
+        this.edgeCBoxOne.getItems().clear();
+        this.edgeCBoxTwo.getItems().clear();
+        this.startComboBox1.getItems().clear();
+        this.startComboBox3.getItems().clear();
+        this.edgeDBox1.getItems().clear();
+        this.edgeDBox2.getItems().clear();
+        for(Map.Entry<Integer,NodeModel>node: this.graphController.getGraphModel().currentNodesMap.entrySet()){
+            this.deleteComboBox.getItems().add(node.getValue().getLabel());
+            this.edgeCBoxOne.getItems().add(node.getValue().getLabel());
+            this.edgeCBoxTwo.getItems().add(node.getValue().getLabel());
+            this.startComboBox1.getItems().add(node.getValue().getLabel());
+            this.startComboBox3.getItems().add(node.getValue().getLabel());
+            this.edgeDBox1.getItems().add(node.getValue().getLabel());
+            this.edgeDBox2.getItems().add(node.getValue().getLabel());
+        }
+    }
+    
+   
 
     @FXML
     void handleButtonClick_GraphPane(MouseEvent event) {
@@ -137,7 +196,13 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_About(ActionEvent event) {
-
+    	try {
+            Desktop.getDesktop().browse(new URL("http://www.cs.unibo.it/~sacerdot/logica/").toURI());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (java.net.URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -157,7 +222,7 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_NextStep(ActionEvent event) {
-
+    	this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
     }
 
     @FXML
@@ -220,14 +285,16 @@ public class HomeController {
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
     	this.graphController = new GraphController(10,true);
-    	this.print();
+    	this.initComboBox();
     	
+    	this.print();
     	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
     void handleMenuItem_NodesGraph(ActionEvent event) throws NumberFormatException, Exception {
     	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false);
+    	this.initComboBox();
     	this.print();
     	
     	this.graphController.getGraphModel().printMatrix();
@@ -235,7 +302,15 @@ public class HomeController {
     
     @FXML
     void handleMenuItem_RunAnimation(ActionEvent event) {
+    	String c = this.startComboBox3.getValue().toString();
+        int x=c.charAt(0);
+        boolean result = this.graphController.getGraphModel().isConnected(x-65);
+        if (result) {
+            JOptionPane.showMessageDialog(null,"Grafo connesso!");
 
+        } else {
+            JOptionPane.showMessageDialog(null,"Grafo non connesso!");
+        }
     }
 
     @FXML
@@ -256,56 +331,61 @@ public class HomeController {
     @FXML
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	if(graphController.getGraphModel().getCurrentNumberNodes() <= 14) {
-    	 	graphController.insertNode();
-        	this.print();
-        	
-        	this.graphController.getGraphModel().printMatrix();
-    	} else 
+    	 		graphController.insertNode();
+    	 		this.print();
+    	 		this.initComboBox();
+    	 		this.graphController.getGraphModel().printMatrix();
+    	 } else 
     		JOptionPane.showMessageDialog(null,"Puoi inserire al massimo 15 nodi!");
-   
     }
+    
+    @FXML
+    void handleMenuDeleteNode(ActionEvent event) throws Exception {
+    	int c = this.deleteComboBox.getValue().toString().charAt(0);
+    	NodeModel deletedNode = new NodeModel(c-65);
+    	graphController.deleteNode(deletedNode);
+    	this.initComboBox();
+    	this.print();
+    	
+    	this.graphController.getGraphModel().printMatrix();
+    }  	
 
+    /*
+     * Insert an edge.
+     */
     @FXML
     void handleMenuItem_InsertEdge(ActionEvent event) throws Exception {
-    	if(this.nodeOne.getText().length() == 0 || this.nodeTwo.getText().length() == 0 || this.peso.getText().length() == 0)
-    		JOptionPane.showMessageDialog(null,"Impossibile inserire arco.");
-    	else {
-    		NodeModel start = new NodeModel(this.nodeOne.getText().charAt(0)-65);
-    		NodeModel end = new NodeModel(this.nodeTwo.getText().charAt(0)-65);
-    		int weight = Integer.parseInt(this.peso.getText());
-    	
-			if(!graphController.getGraphModel().currentNodesMap.containsKey(start.getIndex()) || !graphController.getGraphModel().currentNodesMap.containsKey(end.getIndex()))
-					JOptionPane.showMessageDialog(null,"Nodo non esistente.");
-			else if(weight > 15 || weight < -15 )
-					JOptionPane.showMessageDialog(null,"Inserire un peso da 15 a -15.");
-			else {
-				EdgeModel newEdge = new EdgeModel(start,end,weight);
-	    		
-	    		graphController.insertEdge(newEdge);
-	    		   		
-	    		this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
-	    		this.nodeOne.setText("");
-	    		this.nodeTwo.setText("");
-        		this.peso.setText("");
-    		}
-    	}
-    	this.graphController.getGraphModel().printMatrix();
-    }
-/*    public static Void showPrefWindow(Event e) {
+        Double weight = Double.parseDouble(this.peso.getText());
 
-    	try {
-    		Parent root = FXMLLoader.load(getClass().getResource("applicationSettingsView.fxml"));
-    		Stage stage = new Stage();
-    		stage.setTitle("Animation Settings");
-    		stage.setScene(new Scene(root, 400, 150));
-    		stage.show();
-    		stage.setResizable(false);
-    	} catch (IOException exc) {
-    		exc.printStackTrace();
-    	}
-    	
-    	return null;
-    }*/
+        if(weight > 15 || weight < -15 || weight.isNaN())
+            JOptionPane.showMessageDialog(null,"Inserire un peso da 15 a -15.");
+        else {
+            NodeModel start = new NodeModel(this.edgeCBoxOne.getValue().toString().charAt(0) - 65);
+            NodeModel end = new NodeModel(this.edgeCBoxTwo.getValue().toString().charAt(0) - 65);
+            EdgeModel newEdge = new EdgeModel(start, end, weight.intValue());
+            graphController.insertEdge(newEdge);
+            this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
+
+            this.print();
+            initComboBox();
+            this.peso.setText("");
+        }
+        this.graphController.getGraphModel().printMatrix();
+    }
+    
+    @FXML
+    void handleMenuItem_DeleteEdge(ActionEvent event) throws Exception {
+        NodeModel startEdge = new NodeModel((this.edgeDBox1.getValue().toString().charAt(0))-65);
+        NodeModel endEdge = new NodeModel(this.edgeDBox2.getValue().toString().charAt(0)-65);
+        EdgeModel deleteEdge = new EdgeModel(startEdge, endEdge);
+        graphController.deleteEdge(deleteEdge);
+        initComboBox();
+        
+        this.print();
+        this.graphController.getGraphModel().printMatrix();
+    }
+    
+
     @FXML
     void initialize() {
     	assert n_nodi != null : "fx:id=\"n_nodi\" was not injected: check your FXML file 'Home.fxml'.";

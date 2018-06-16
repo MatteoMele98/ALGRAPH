@@ -6,15 +6,20 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class BoolItem {
-	Text number;
+	Text label;
 	Text bool;
 	HBox gr;
 	
-	public BoolItem(Integer x){
+	public BoolItem(String s){
 		this.gr = new HBox(); 
-		this.number = new Text();
+		this.label = new Text();
 		this.bool = new Text();
-		this.number.setText(x.toString());
+		
+		this.label.setText(s);
+		this.label.setTextAlignment(TextAlignment.CENTER);
+		this.label.setStyle("-fx-font: 18 arial;");
+		this.label.setStroke(Color.BLACK);
+		this.label.setStrokeWidth(1);
 		
 		this.bool.setText("False");
 		this.bool.setFill(Color.RED);
@@ -22,13 +27,8 @@ public class BoolItem {
 		this.bool.setStroke(Color.RED);
 		this.bool.setStrokeWidth(1);
 		this.bool.setStyle("-fx-font: 18 arial;");
-		
-		this.number.setTextAlignment(TextAlignment.CENTER);
-		this.number.setStyle("-fx-font: 18 arial;");
-		this.number.setStroke(Color.BLACK);
-		this.number.setStrokeWidth(1);
 	
-		this.gr.getChildren().add(this.number);
+		this.gr.getChildren().add(this.label);
 		this.gr.getChildren().add(this.bool);
 		this.gr.setVisible(true);
 		this.gr.setStyle("-fx-padding: 5;" + "-fx-border-style: solid inside;"
@@ -39,21 +39,13 @@ public class BoolItem {
 	
 	public void setBool(boolean v) {
 		if(v) {
-			this.bool.setText("True");
+			this.bool.setText("TRUE");
 			this.bool.setFill(Color.GREEN);
 		}
 		else {
-			this.bool.setText("False");
+			this.bool.setText("FALSE");
 			this.bool.setFill(Color.RED);
 		}
-	}
-	
-	public void setNumber(Integer n) {
-		this.number.setText(n.toString());
-	}
-	
-	public Text getNumber() {
-		return this.number;
 	}
 	
 	public Text getBool() {

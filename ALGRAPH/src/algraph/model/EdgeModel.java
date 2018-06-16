@@ -11,7 +11,7 @@ public class EdgeModel {
 		this.weight = w;
 	}
 	
-	EdgeModel(NodeModel u, NodeModel v){
+	public EdgeModel(NodeModel u, NodeModel v){
 		this.startNode = u;
 		this.endNode = v;
 		this.weight = null;
