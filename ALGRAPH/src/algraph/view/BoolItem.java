@@ -41,10 +41,12 @@ public class BoolItem {
 		if(v) {
 			this.bool.setText("TRUE");
 			this.bool.setFill(Color.GREEN);
+			this.bool.setStroke(Color.GREEN);
 		}
 		else {
 			this.bool.setText("FALSE");
 			this.bool.setFill(Color.RED);
+			this.bool.setStroke(Color.RED);
 		}
 	}
 	

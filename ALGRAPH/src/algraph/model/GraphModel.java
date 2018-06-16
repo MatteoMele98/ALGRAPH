@@ -12,8 +12,8 @@ public class GraphModel {
 	public final int MAX_NODES = 15;
 	public final int MIN_NODES = 3;
 	
-	private static final int MAX_WEIGHT = 15;
-	private static final int MIN_WEIGHT = -15;
+	private static final int MAX_WEIGHT = 30;
+	private static final int MIN_WEIGHT = -30;
 	
 	private int currentNumberNodes;
 	public TreeMap<Integer,NodeModel> currentNodesMap = new TreeMap<Integer,NodeModel>();
@@ -21,10 +21,9 @@ public class GraphModel {
 	
 	private Integer [][] adjMatrix = new Integer [MAX_NODES][MAX_NODES];
 	
-	//solo archi entranti o nodi isolati
+	//nodi isolati
 	public ArrayList<NodeModel> noLinkedNode = new ArrayList<NodeModel>();
-	//solo archi uscenti
-	public ArrayList<NodeModel> allExitEdge = new ArrayList<NodeModel>();
+	
 	
 	//==============================================================================
 	public GraphModel() {
@@ -364,8 +363,6 @@ public class GraphModel {
 		String noLinkedNode="";
 		for(Integer i=0; i<size; i++){
 			if(uscenti[i]){
-				NodeModel tmp=new NodeModel(i);
-				this.allExitEdge.add(tmp);
 				allExitNode +=' '+i.toString()+',';
 			}
 			if(nodeNc[i]!=0){

@@ -6,7 +6,7 @@ import algraph.view.BoolItem;
 
 
 public class VisitedController {
-	private ArrayList<BoolItem> boolItem;
+	public ArrayList<BoolItem> boolItem;
 	
 	public VisitedController() {
 		this.boolItem = new ArrayList<BoolItem>();

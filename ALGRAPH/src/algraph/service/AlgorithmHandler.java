@@ -50,8 +50,6 @@ public class AlgorithmHandler {
 	
 	this.graphM = this.graphController.getGraphModel();
 	this.graphV = this.graphController.getGraphView();
-	
-	restartAlgorithm();
 	}
 	
     
@@ -172,33 +170,30 @@ public class AlgorithmHandler {
     		break;
     		
     	case 2:
-    		boolean finish;
-    		StringBuilder s2 = new StringBuilder();
-//    		for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
-//    			if(visit.getValue()) finish = false;   		
-//    		} 
-//    		
-//    		if(!finish) {
-//    			s2.append("Devono essere vistati altri nodi.");
-//    			programCounter = 4;
-//    		} else {
-//				s2.append("Tutti i nodi sono stati visitati." + "\n");
-//				s2.append("===========================================" + "\n");
-//				//"Albero di copertura minimo: .... "
-//				programCounter = PROGRAM_COUNTER_END;
-//    		}
-    		
+    		boolean finish = true;
+    		StringBuilder s2 = new StringBuilder();    		
     		for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
     			NodeModel visitNode = visit.getKey();
-    			if (visit.getValue() == false) {
-    				if (this.graphM.noLinkedNode.contains(visitNode) || this.graphM.allExitEdge.contains(visitNode))
-    					
+    			
+    			if (!this.graphM.noLinkedNode.contains(visitNode)) {
+    				if (visit.getValue()) {
+        				finish = finish && visit.getValue();
+       				}  else 
+       					finish = finish && false;
     			}
-    				
     		} 
     		
-    		
-    		
+    		if(finish) {
+    			s2.append("Tutti i nodi sono stati visitati." + "\n");
+				s2.append("===========================================" + "\n");
+				//"Albero di copertura minimo: .... "
+				programCounter = PROGRAM_COUNTER_END;
+    		} else {
+    			s2.append("Devono essere vistati altri nodi.");
+    			programCounter = 4;
+    		}
+    		break;
+   		
     	case 3:
     		//il nodo corrente è il nodo con la priorità minima.
     		//all'inizio è la radice perchè settata nel passo 1
@@ -240,10 +235,12 @@ public class AlgorithmHandler {
     			
     				Integer newPriority = this.graphM.getWeight(this.currentNode, this.adjNode);
     				
-    				//setto a colore di defualt l'arco tra il nodo analizzato e il suo vecchio padre (se esisteva)
+    				//setto al colore di defualt l'arco tra il nodo analizzato e il suo vecchio padre (se esisteva)
     				//perchè se sono entrato in questo if è perchè il padre del nodo deve cambiare
-    				if(this.graphM.areConnected(this.parentMap.get(this.adjNode), this.adjNode))
+    				if(this.graphM.areConnected(this.parentMap.get(this.adjNode), this.adjNode)) {
     					this.graphV.getEdge(this.parentMap.get(this.adjNode), this.adjNode).switchColor(Colors.DEFAULT);
+    					this.graphV.getEdge(this.adjNode, this.parentMap.get(this.adjNode)).switchColor(Colors.DEFAULT);
+    				}
     				
     				//=============================================================
     				
@@ -257,8 +254,9 @@ public class AlgorithmHandler {
     				//=============================================================
     				
     				//update controller
-    				//coloro l'arco dal nodo corrente (padre) al nodo che sto analizzando
+    				//coloro l'arco dal nodo corrente (padre) al nodo che sto analizzando e viceversa
     				this.graphV.getEdge(this.currentNode, this.adjNode).switchColor(Colors.VISITED);
+    				this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
     				
     				//aggiorno la priorità del nodo con il nuovo peso
     				this.priorityController.getPriorityItem(this.adjNode.getIndex()).setPriority(Integer.toString(newPriority));  
@@ -280,6 +278,14 @@ public class AlgorithmHandler {
         while (!isFinish()) {
             executeStep();
         }
+    }
+    
+    public VisitedController getVisitedController() {
+    	return this.visitedController;
+    }
+    
+    public PriorityController getPriorityController() {
+    	return this.priorityController;
     }
     
 }

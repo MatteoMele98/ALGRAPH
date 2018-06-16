@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import algraph.view.PriorityItem;
 
 public class PriorityController {
-	private ArrayList<PriorityItem> priorityItem;
+	public ArrayList<PriorityItem> priorityItem;
 	
 	public PriorityController() {
 		this.priorityItem = new ArrayList<PriorityItem>();

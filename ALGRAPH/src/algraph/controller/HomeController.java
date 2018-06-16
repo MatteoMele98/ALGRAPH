@@ -146,13 +146,9 @@ public class HomeController {
      */
     private void print() {
     	this.graphPane.getChildren().clear();
-    	this.vBoxVisited.getChildren().clear();
-    	this.vBoxParents.getChildren().clear();
     	for(Integer i=0; i < MAX_NODES; i++) {
             if (this.graphController.getGraphView().getNode(i).getIsVisible()) {
                 this.graphPane.getChildren().add(this.graphController.getGraphView().getNode(i).printNode());
-//                this.vBoxVisited.getChildren().add(this.visitedController.getBoolItem(i).printBoolItem());
-//                this.vBoxParents.getChildren().add(this.priorityController.getPriorityItem(i).printPriorityItem());
             }
             for (int j = 0; j < MAX_NODES; j++) {
                 if (this.graphController.getGraphView().getEdge(i, j) != null) {
@@ -161,8 +157,23 @@ public class HomeController {
                 }
             }
         }
-
+    	this.printVect();
         this.outputTextArea1.setText(this.graphController.getGraphModel().printMatrix().toString());
+    }
+    
+    private void printVect() {
+    	if(!this.visitedController.boolItem.isEmpty()) {
+    		this.vBoxVisited.getChildren().clear();
+    		for(int i = 0; i < this.visitedController.boolItem.size(); i++)
+    		this.vBoxVisited.getChildren().add(this.visitedController.getBoolItem(i).printBoolItem());
+    	}
+    	
+    	if(!this.priorityController.priorityItem.isEmpty()) {
+    		this.vBoxParents.getChildren().clear();
+    		for(int i = 0; i < this.priorityController.priorityItem.size(); i++)
+    		this.vBoxParents.getChildren().add(this.priorityController.getPriorityItem(i).printPriorityItem());
+    	}
+    		
     }
     
     /*
@@ -315,7 +326,15 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_Save(ActionEvent event) {
-
+    	//AVVIA TUTTO ALGORITMO
+    	this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
+    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
+    	
+    	this.algorithmHandler.restartAlgotithm(root);
+    	this.visitedController = this.algorithmHandler.getVisitedController();
+    	this.priorityController = this.algorithmHandler.getPriorityController();
+    	this.algorithmHandler.executeAll();   	
+    	this.print();
     }
 
     @FXML
@@ -357,7 +376,7 @@ public class HomeController {
     void handleMenuItem_InsertEdge(ActionEvent event) throws Exception {
         Double weight = Double.parseDouble(this.peso.getText());
 
-        if(weight > 15 || weight < -15 || weight.isNaN())
+        if(weight > 30 || weight < -30 || weight.isNaN())
             JOptionPane.showMessageDialog(null,"Inserire un peso da 15 a -15.");
         else {
             NodeModel start = new NodeModel(this.edgeCBoxOne.getValue().toString().charAt(0) - 65);
