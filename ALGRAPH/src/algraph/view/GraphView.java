@@ -33,6 +33,7 @@ public class GraphView {
 			for(int j = 0; j < MAX_NODES; j++) {
 				if(this.getEdge(i, j) != null) {
 					this.insertEdge(i,j);
+					this.insertEdge(j,i);
 				}
 			}
 		}
@@ -57,8 +58,11 @@ public class GraphView {
 		
 		this.edge = new EdgeView[MAX_NODES][MAX_NODES];
 		for(int i=0; i<MAX_NODES; i++) {
-			for(int z=0; z<MAX_NODES; z++) 
+			for(int z=0; z<MAX_NODES; z++) {
 				this.edge[i][z] = null;
+			}
+				
+			
 		}
 	}
 	
@@ -91,7 +95,8 @@ public class GraphView {
 		Point centerStart = new Point(this.nodes[edge.getStartNode().getIndex()].getPosX(), this.nodes[edge.getStartNode().getIndex()].getPosY());
 		Point centerEnd = new Point(this.nodes[edge.getEndNode().getIndex()].getPosX(), this.nodes[edge.getEndNode().getIndex()].getPosY());
 		
-		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = new EdgeView(centerStart,centerEnd,RADIUS);			
+		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = new EdgeView(centerStart,centerEnd,RADIUS);		
+		this.edge[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = new EdgeView(centerEnd,centerStart,RADIUS);		
 	}
 	
 	/*
@@ -103,15 +108,18 @@ public class GraphView {
 		Point centerStart = new Point(this.nodes[start].getPosX(), this.nodes[start].getPosY());
 		Point centerEnd = new Point(this.nodes[end].getPosX(), this.nodes[end].getPosY());
 		
-		this.edge[start][end] = new EdgeView(centerStart,centerEnd,RADIUS);			
+		this.edge[start][end] = new EdgeView(centerStart,centerEnd,RADIUS);
+		this.edge[end][start] = new EdgeView(centerEnd,centerStart,RADIUS);
 	}
 	
 	public void deleteEdge(EdgeModel edge) {
-		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = null;			
+		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = null;	
+		this.edge[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = null;	
 	}	
 	
 	public void deleteEdge(int start, int end) {
 		this.edge[start][end] = null;	
+		this.edge[end][start] = null;
 	}
 	
 	public NodeView getNode(int n) {

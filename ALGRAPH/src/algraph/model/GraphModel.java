@@ -71,10 +71,13 @@ public class GraphModel {
 		for(int row = 0; row < this.currentNumberNodes; row++) {
 			for(int col = 0; col < this.currentNumberNodes; col++) {
 				percentage0 = Math.random();
-				if(row == col || (percentage0 < 0.4 || percentage0 > 0.7)) this.adjMatrix[row][col] = 0;
+				if(row == col || (percentage0 < 0.4 || percentage0 > 0.7)) {
+					this.adjMatrix[row][col] = 0;
+				}
 				else {
 					int weight = rand.nextInt(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
 					this.adjMatrix[row][col] = weight;
+					this.adjMatrix[col][row] = weight;
 				}
 			}
 		}
@@ -117,6 +120,7 @@ public class GraphModel {
 	 */
 	public void insertEdge(EdgeModel edge) {
 		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
+		this.adjMatrix[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = edge.getWeight();
 	}
 	
 	/*
@@ -129,6 +133,7 @@ public class GraphModel {
 	 */
 	public void deleteEdge(EdgeModel edge) {		
 		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = 0;
+		this.adjMatrix[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = 0;
 	}
 
 	public Integer[][] getMatrix(){
@@ -199,7 +204,7 @@ public class GraphModel {
 	 */
 	public boolean areConnected(int u, int v) {
 		boolean areConnected = true;		
-		if(this.adjMatrix[u][v] == 0 || this.adjMatrix[u][v ] == null)
+		if(this.adjMatrix[u][v] == 0 || this.adjMatrix[u][v] == null)
 			areConnected = false;
 		return areConnected;
 	}
@@ -258,7 +263,7 @@ public class GraphModel {
 	 */
 	public String matrixAdjNode(NodeModel node) {
 		String adj;
-		adj = "Node " + node.getIndex() +"\t" +"| ";
+		adj = "Node " + node.getLabel() +"\t" +"| ";
 		for(int i = 0; i<MAX_NODES; i++) {
 			if(this.adjMatrix[node.getIndex()][i] != null)
 				adj += "\t" + this.adjMatrix[node.getIndex()][i] + "\t|";

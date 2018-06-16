@@ -45,16 +45,16 @@ public class HomeController {
 	private boolean pendingExecution;
 	//====================================================
 	
-//	public HomeController() throws Exception {
-//		this.graphController = new GraphController();
-//		this.visitedController = new VisitedController();
-//		this.priorityController = new PriorityController();
-//		
-//		/*
-//		 * add alg handler
-//		 * 
-//		 */
-//	}
+	public HomeController() throws Exception {
+		this.graphController = new GraphController();
+		this.visitedController = new VisitedController();
+		this.priorityController = new PriorityController();
+		
+		/*
+		 * add alg handler
+		 * 
+		 */
+	}
 	
 	public void algorithmHandlerGenerator() {
 		this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);

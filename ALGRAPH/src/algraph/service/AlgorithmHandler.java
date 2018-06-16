@@ -54,12 +54,6 @@ public class AlgorithmHandler {
 	restartAlgorithm();
 	}
 	
-	/*
-	 * @root = new StartNode
-	 */
-	public void setRoot(NodeModel root) {
-		this.root = root;
-	}
     
     /*
      * @return true iff the execution is started
@@ -178,21 +172,31 @@ public class AlgorithmHandler {
     		break;
     		
     	case 2:
-    		boolean finish = true;
+    		boolean finish;
     		StringBuilder s2 = new StringBuilder();
+//    		for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
+//    			if(visit.getValue()) finish = false;   		
+//    		} 
+//    		
+//    		if(!finish) {
+//    			s2.append("Devono essere vistati altri nodi.");
+//    			programCounter = 4;
+//    		} else {
+//				s2.append("Tutti i nodi sono stati visitati." + "\n");
+//				s2.append("===========================================" + "\n");
+//				//"Albero di copertura minimo: .... "
+//				programCounter = PROGRAM_COUNTER_END;
+//    		}
+    		
     		for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
-    			if(visit.getValue()) finish = false;   		
+    			NodeModel visitNode = visit.getKey();
+    			if (visit.getValue() == false) {
+    				if (this.graphM.noLinkedNode.contains(visitNode) || this.graphM.allExitEdge.contains(visitNode))
+    					
+    			}
+    				
     		} 
     		
-    		if(!finish) {
-    			s2.append("Devono essere vistati altri nodi.");
-    			programCounter = 4;
-    		} else {
-				s2.append("Tutti i nodi sono stati visitati." + "\n");
-				s2.append("===========================================" + "\n");
-				//"Albero di copertura minimo: .... "
-				programCounter = PROGRAM_COUNTER_END;
-    		}
     		
     		
     	case 3:
