@@ -39,7 +39,7 @@ public class AlgorithmHandler extends Thread {
 	private NodeModel currentNode;
     private NodeModel adjNode;
  
-    	
+    private int speed;
 	private int programCounter = 0;
     
     //========================================================================================
@@ -72,9 +72,9 @@ public class AlgorithmHandler extends Thread {
     	return (this.programCounter >= PROGRAM_COUNTER_END);
     }
     
-    public void restartAlgotithm(NodeModel root) {
+    public void restartAlgotithm(NodeModel root,int s) {
     	this.root = root;
-    	
+		this.speed=s;
     	restartAlgorithm();
     }
         
@@ -85,7 +85,6 @@ public class AlgorithmHandler extends Thread {
      */
     public void restartAlgorithm() {
     	this.programCounter = 0;
-      	
     	this.parentMap.clear();
     	this.visitedMap.clear();
     	this.parentMap.clear();
@@ -136,7 +135,7 @@ public class AlgorithmHandler extends Thread {
     // A utility function to find the vertex with minimum key
     // value, from the set of vertices not yet included in MST
     private NodeModel minKey() throws InterruptedException {
-    	String s = new String("\n Cerco il nodo con priorità minima non ancora visitato." + "\n");
+    	String s = new String("\n Cerco il nodo con prioritï¿½ minima non ancora visitato." + "\n");
     	System.out.println(s);
     	
     	this.pseudoCodeController.addString(s);
@@ -159,45 +158,45 @@ public class AlgorithmHandler extends Thread {
         	
         	// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
     		synchronized(this) {
-				this.wait(500);
+				this.wait(this.speed);
 			}
         	
         	if (!this.visitedMap.get(tmp) && this.priorityMap.get(tmp) < min)
             {            	
-                min = this.priorityMap.get(tmp);	//aggiorno la priorità minima trovata
-                minNode = tmp; 						//setto il nodo con priorità minima trovato fin ora.
+                min = this.priorityMap.get(tmp);	//aggiorno la prioritï¿½ minima trovata
+                minNode = tmp; 						//setto il nodo con prioritï¿½ minima trovato fin ora.
             }
             
             //re-paint with the previous color
             this.graphV.getNode(tmp.getIndex()).switchColor(prevColor);
         }
         
-        //ritorna nodo con priorità minima non ancora visitato
+        //ritorna nodo con prioritï¿½ minima non ancora visitato
         return minNode; 
     }
  
     
     //execute one step of the alghoritm based on the program counter
-    public void executeStep() throws InterruptedException { 
+    public void executeStep() throws InterruptedException {
+    	this.speed=speed;
     	if(this.root == null || this.isFinish()) {
     		return;
     	}
-    	
     	switch(programCounter) {
     	case 0:
     		programCounter = 1;
     		break;
     		
     	case 1:
-    		//setto la root dell'albero dando la priorità minima.
+    		//setto la root dell'albero dando la prioritï¿½ minima.
     		this.priorityMap.put(this.root, 0);
     		
-    		//setto graficamente la priorità della root
+    		//setto graficamente la prioritï¿½ della root
     		this.priorityController.priorityItemMap.get(root).setPriority("0");
     		
     		// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
     		synchronized(this) {
-				this.wait(1000);
+				this.wait(this.speed);
 			}
     		
     		StringBuilder s1 = new StringBuilder();
@@ -236,8 +235,8 @@ public class AlgorithmHandler extends Thread {
     		break;
    		
     	case 3:
-    		//il nodo corrente è il nodo con la priorità minima.
-    		//all'inizio è la radice perchè settata nel passo 1
+    		//il nodo corrente ï¿½ il nodo con la prioritï¿½ minima.
+    		//all'inizio ï¿½ la radice perchï¿½ settata nel passo 1
 			this.currentNode = minKey();
 			
 			StringBuilder s3 = new StringBuilder();
@@ -263,7 +262,7 @@ public class AlgorithmHandler extends Thread {
 				
 				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
 	    		synchronized(this) {
-					this.wait(1000);
+					this.wait(this.speed);
 				}
 	
 				programCounter = 2;
@@ -284,8 +283,8 @@ public class AlgorithmHandler extends Thread {
     		for(Map.Entry<Integer, NodeModel> adj : this.graphM.currentNodesMap.entrySet()) {
     			this.adjNode = adj.getValue();
     			
-    			//se:	il nodo è connesso a currentNode
-    			//		il peso dell'arco è minore della priorità precedente
+    			//se:	il nodo ï¿½ connesso a currentNode
+    			//		il peso dell'arco ï¿½ minore della prioritï¿½ precedente
     			//		non ho visitato prima questo nodo
     			if(this.graphM.areConnected(this.currentNode, this.adjNode) 
     					&& this.graphM.getWeight(this.currentNode, this.adjNode) < this.priorityMap.get(this.adjNode) 
@@ -294,7 +293,7 @@ public class AlgorithmHandler extends Thread {
     				Integer newPriority = this.graphM.getWeight(this.currentNode, this.adjNode);
     				
     				//setto al colore di defualt l'arco tra il nodo analizzato e il suo vecchio padre (se esisteva)
-    				//perchè se sono entrato in questo if è perchè il padre del nodo deve cambiare
+    				//perchï¿½ se sono entrato in questo if ï¿½ perchï¿½ il padre del nodo deve cambiare
     				if(this.graphM.areConnected(this.parentMap.get(this.adjNode), this.adjNode)) {
     					this.graphV.getEdge(this.parentMap.get(this.adjNode), this.adjNode).switchColor(Colors.DEFAULT);
     					this.graphV.getEdge(this.adjNode, this.parentMap.get(this.adjNode)).switchColor(Colors.DEFAULT);
@@ -302,7 +301,7 @@ public class AlgorithmHandler extends Thread {
     				
     				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
     	    		synchronized(this) {
-    					this.wait(1000);
+    					this.wait(this.speed);
     				}
     				
     				//=============================================================
@@ -311,7 +310,7 @@ public class AlgorithmHandler extends Thread {
     				//setto il padre del nuovo nodo al nodo corrente
     				this.parentMap.put(this.adjNode, this.currentNode);
     				
-    				//aggiorno la priorità del nodo con il nuovo peso
+    				//aggiorno la prioritï¿½ del nodo con il nuovo peso
     				this.priorityMap.put(this.adjNode, newPriority);
     				
     				//=============================================================
@@ -321,12 +320,12 @@ public class AlgorithmHandler extends Thread {
     				this.graphV.getEdge(this.currentNode, this.adjNode).switchColor(Colors.VISITED);
     				this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
     				
-    				//aggiorno la priorità del nodo con il nuovo peso
+    				//aggiorno la prioritï¿½ del nodo con il nuovo peso
     				this.priorityController.getPriorityItem(this.adjNode).setPriority(Integer.toString(newPriority));
     				
     				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
     	    		synchronized(this) {
-    					this.wait(1000);
+    					this.wait(this.speed);
     				}
     			}
     		}
@@ -334,20 +333,204 @@ public class AlgorithmHandler extends Thread {
     		programCounter = 3;
     	}
 }
-    
-    /*
+
+	private NodeModel noPauseminKey(){
+		String s = new String("\n Cerco il nodo con prioritï¿½ minima non ancora visitato." + "\n");
+		System.out.println(s);
+
+		this.pseudoCodeController.addString(s);
+		this.homeController.printPseudoCode();
+
+		System.out.println(this.pseudoCodeController.getString());
+
+		// Initialize min value
+		Integer min = Integer.MAX_VALUE;
+		NodeModel minNode = null;
+
+		for (Map.Entry<Integer, NodeModel> node : this.graphM.currentNodesMap.entrySet()) {
+			NodeModel tmp = node.getValue();
+
+			this.pseudoCodeController.addString("Analizzo nodo " + tmp.getLabel() + "." + "\n");
+			this.homeController.printPseudoCode();
+			//highlith the currently visited node
+			Color prevColor = this.graphV.getNode(tmp.getIndex()).getColor();
+			this.graphV.getNode(tmp.getIndex()).switchColor(Colors.VISITING);
+
+			if (!this.visitedMap.get(tmp) && this.priorityMap.get(tmp) < min)
+			{
+				min = this.priorityMap.get(tmp);	//aggiorno la prioritï¿½ minima trovata
+				minNode = tmp; 						//setto il nodo con prioritï¿½ minima trovato fin ora.
+			}
+
+			//re-paint with the previous color
+			this.graphV.getNode(tmp.getIndex()).switchColor(prevColor);
+		}
+
+		//ritorna nodo con prioritï¿½ minima non ancora visitato
+		return minNode;
+	}
+
+
+	//execute one step of the alghoritm based on the program counter
+	public void noPauseexecuteStep() {
+		if(this.root == null || this.isFinish()) {
+			return;
+		}
+		switch(programCounter) {
+			case 0:
+				programCounter = 1;
+				break;
+
+			case 1:
+				//setto la root dell'albero dando la prioritï¿½ minima.
+				this.priorityMap.put(this.root, 0);
+
+				//setto graficamente la prioritï¿½ della root
+				this.priorityController.priorityItemMap.get(root).setPriority("0");
+
+				StringBuilder s1 = new StringBuilder();
+				s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel() + "\n");
+				this.pseudoCodeController.addString(s1);
+				this.homeController.printPseudoCode();
+				programCounter = 3;
+				break;
+
+			case 2:
+				boolean finish = true;
+				StringBuilder s2 = new StringBuilder();
+				for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
+					NodeModel visitNode = visit.getKey();
+
+					if (!this.graphM.noLinkedNode.contains(visitNode)) {
+						if (visit.getValue()) {
+							finish = finish && visit.getValue();
+						}  else
+							finish = finish && false;
+					}
+				}
+
+				if(finish) {
+					s2.append("Tutti i nodi sono stati visitati." + "\n");
+					s2.append("================================" + "\n");
+					this.pseudoCodeController.addString(s2);
+					this.pseudoCodeController.addString(this.printMST());
+					this.homeController.printPseudoCode();
+					programCounter = PROGRAM_COUNTER_END;
+				} else {
+					this.pseudoCodeController.addString("Devono essere vistati altri nodi.");
+					this.homeController.printPseudoCode();
+					programCounter = 4;
+				}
+				break;
+
+			case 3:
+				//il nodo corrente ï¿½ il nodo con la prioritï¿½ minima.
+				//all'inizio ï¿½ la radice perchï¿½ settata nel passo 1
+				this.currentNode = noPauseminKey();
+
+				StringBuilder s3 = new StringBuilder();
+
+				if(!(this.currentNode == null)) {
+					s3.append("Aggiungo " + this.currentNode.getLabel() + " all'albero di copertura." + "\n" );
+					this.pseudoCodeController.addString(s3);
+					this.homeController.printPseudoCode();
+					//===========================================================
+
+					//update local variable
+					//setto a visitato il nodo corrente
+					this.visitedMap.put(this.currentNode,true);
+
+					//===========================================================
+
+					//update controller:
+					//evidenzio il nodo corrente appena inserito
+					this.graphV.getNode(this.currentNode).switchColor(Colors.VISITED);
+
+					//setto a visitato il nodo corrente nel vettore dei visitati
+					this.visitedController.getBoolItem(this.currentNode).setBool(true);
+
+					programCounter = 2;
+				} else {
+					s3.append("Tutti i nodi sono stati visitati." + "\n");
+					s3.append("===========================================" + "\n");
+					this.pseudoCodeController.addString(s3);
+					this.pseudoCodeController.addString(this.printMST());
+					this.homeController.printPseudoCode();
+					programCounter = PROGRAM_COUNTER_END;
+				}
+
+
+				break;
+
+			case 4:
+				//ciclo su tutti i nodi
+				for(Map.Entry<Integer, NodeModel> adj : this.graphM.currentNodesMap.entrySet()) {
+					this.adjNode = adj.getValue();
+
+					//se:	il nodo ï¿½ connesso a currentNode
+					//		il peso dell'arco ï¿½ minore della prioritï¿½ precedente
+					//		non ho visitato prima questo nodo
+					if(this.graphM.areConnected(this.currentNode, this.adjNode)
+							&& this.graphM.getWeight(this.currentNode, this.adjNode) < this.priorityMap.get(this.adjNode)
+							&& this.visitedMap.get(this.adjNode) == false) {
+
+						Integer newPriority = this.graphM.getWeight(this.currentNode, this.adjNode);
+
+						//setto al colore di defualt l'arco tra il nodo analizzato e il suo vecchio padre (se esisteva)
+						//perchï¿½ se sono entrato in questo if ï¿½ perchï¿½ il padre del nodo deve cambiare
+						if(this.graphM.areConnected(this.parentMap.get(this.adjNode), this.adjNode)) {
+							this.graphV.getEdge(this.parentMap.get(this.adjNode), this.adjNode).switchColor(Colors.DEFAULT);
+							this.graphV.getEdge(this.adjNode, this.parentMap.get(this.adjNode)).switchColor(Colors.DEFAULT);
+						}
+						//=============================================================
+
+						//update local variables
+						//setto il padre del nuovo nodo al nodo corrente
+						this.parentMap.put(this.adjNode, this.currentNode);
+
+						//aggiorno la prioritï¿½ del nodo con il nuovo peso
+						this.priorityMap.put(this.adjNode, newPriority);
+
+						//=============================================================
+
+						//update controller
+						//coloro l'arco dal nodo corrente (padre) al nodo che sto analizzando e viceversa
+						this.graphV.getEdge(this.currentNode, this.adjNode).switchColor(Colors.VISITED);
+						this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
+
+						//aggiorno la prioritï¿½ del nodo con il nuovo peso
+						this.priorityController.getPriorityItem(this.adjNode).setPriority(Integer.toString(newPriority));
+
+					}
+				}
+
+				programCounter = 3;
+		}
+	}
+
+	/*
      * Executes all remaining steps of the algorithm
      */
-    public void executeAll() throws InterruptedException {
+    public void executeAll(int speed) throws InterruptedException {
         if (this.root == null || isFinish()) {
             return;
         }
-        
+        this.speed=speed;
         while(!isFinish()) {
 				this.executeStep();
         }
     }
-    
+	/*
+	 * Executes all remaining steps of the algorithm
+	 */
+	public void noPauseexecuteAll() {
+		if (this.root == null || isFinish()) {
+			return;
+		}
+		while(!isFinish()) {
+			this.noPauseexecuteStep();
+		}
+	}
 
     
     public VisitedController getVisitedController() {
@@ -362,11 +545,11 @@ public class AlgorithmHandler extends Thread {
 	@Override
 	public void run() {
 		try {
-			this.executeAll();
+			this.executeAll(this.speed);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-    
+
 }
    

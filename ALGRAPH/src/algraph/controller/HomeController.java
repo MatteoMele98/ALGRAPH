@@ -375,13 +375,19 @@ public class HomeController {
     }
     
     @FXML
-    void handleMenuItem_RunAnimation(ActionEvent event) {
+    void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
     	this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
 				priorityController, pseudoCodeController);
-		NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
-		
-		this.algorithmHandler.restartAlgotithm(root);
-		this.algorithmHandler.start();  
+        NodeModel root;
+		if(this.startComboBox1.getValue()==null) {
+            root = new NodeModel(this.startComboBox3.getValue().toString().charAt(0) - 65);
+            this.algorithmHandler.restartAlgotithm(root, 1000);
+            this.algorithmHandler.start();
+        }else{
+		    root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0) - 65);
+		    this.algorithmHandler.restartAlgotithm(root,1000);
+            this.algorithmHandler.noPauseexecuteAll();
+        }
 		this.print();
     }
 
@@ -413,14 +419,14 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_Stop(ActionEvent event) {
-    	//AVVIA TUTTO ALGORITMO
-    	this.algorithmHandler = new AlgorithmHandler(this, graphController,visitedController,
-    												priorityController,pseudoCodeController);
-    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
-    	
-    	this.algorithmHandler.restartAlgotithm(root);
-    	this.algorithmHandler.start();	
-    	this.print();
+//    	//AVVIA TUTTO ALGORITMO
+//    	this.algorithmHandler = new AlgorithmHandler(this, graphController,visitedController,
+//    												priorityController,pseudoCodeController);
+//    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
+//
+//    	this.algorithmHandler.restartAlgotithm(root);
+//    	this.algorithmHandler.start();
+//    	this.print();
     }
 
     @FXML
