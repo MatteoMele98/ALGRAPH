@@ -55,7 +55,7 @@ public class AlgorithmHandler extends Thread {
 	this.visitedController = visitedController;
 	this.priorityController = priorityController;
 	this.pseudoCodeController = pseudoCodeController;
-	
+
 	this.graphM = this.graphController.getGraphModel();
 	this.graphV = this.graphController.getGraphView();
 	}

@@ -21,10 +21,10 @@
     <top>
         <MenuBar prefWidth="905.0" BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu fx:id="file" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_OpenFile" text="Apri.." />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_Save" text="Salva" />
+                        <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#handleMenuItem_OpenFile" text="Apri.." />
+                        <MenuItem fx:id="save" mnemonicParsing="false" onAction="#handleMenuItem_Save" text="Salva" />
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_RandomGraph" text="Grafo Casuale" />
                         <Menu mnemonicParsing="false" text="Crea Grafo..">
                             <items>
@@ -99,11 +99,20 @@
                               </MenuItem>
                            </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Passo Passo">
+                        <Menu mnemonicParsing="false" text="Animazione">
                            <items>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
                                     <ComboBox fx:id="startComboBox3" onAction="#handleMenuItem_RunAnimation" prefWidth="150.0" promptText="Inserisci Nodo" />
+                                 </graphic>
+                              </MenuItem>
+                           </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Prossimo passo">
+                           <items>
+                              <MenuItem mnemonicParsing="false">
+                                 <graphic>
+                                    <ComboBox fx:id="stepComboBox2" onAction="#handleMenuItem_NextStep" prefWidth="150.0" promptText="Inserisci Nodo" />
                                  </graphic>
                               </MenuItem>
                            </items>
