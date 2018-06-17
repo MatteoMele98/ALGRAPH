@@ -13,7 +13,6 @@ import algraph.utils.*;
 public class EdgeView extends Path{
 	  Group edge = new Group();
 	  Line arrow;
-	  Circle pointer;
 	  
 	  public EdgeView() {
 		  
@@ -50,21 +49,12 @@ public class EdgeView extends Path{
         	arrow.setStroke(Colors.DEFAULT);
         	arrow.setStrokeWidth(3);
         	
-        	//pointer
-            this.pointer = new Circle();
-            pointer.setCenterX(arrow.getEndX());
-            pointer.setCenterY(arrow.getEndY());
-            pointer.setStroke(Colors.DEFAULT); //nero
-            pointer.setRadius(5);
-
+    
             edge.getChildren().add(arrow);
-            edge.getChildren().add(pointer);
         }
       
       public void switchColor(Color newColor) {
     	 this.arrow.setStroke(newColor); //rosso
-       	 this.pointer.setStroke(newColor);
-       	 this.pointer.setFill(newColor);
       }
    
       

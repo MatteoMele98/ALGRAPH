@@ -40,7 +40,7 @@ public class NodeView {
 		circle.setCenterX(center.getX()+25);
 		circle.setCenterY(center.getY()+25);
 		circle.setStroke(this.color); //nero
-		circle.setStrokeWidth(4);
+		circle.setStrokeWidth(2);
 		
 		this.label = new Text();
 //		this.label.setText(String.valueOf(node.getIndex()));
@@ -66,7 +66,8 @@ public class NodeView {
 	}
 	
 	public void switchColor(Color newColor) {
-		this.circle.setStroke(newColor);
+		this.circle.setFill(newColor);
+		this.label.setFill(Color.WHITE);
 		this.color = newColor;
 	}
 	

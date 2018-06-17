@@ -19,8 +19,8 @@ public class PriorityItem {
 		this.label.setText(s);
 		this.label.setTextAlignment(TextAlignment.CENTER);
 		this.label.setStyle("-fx-font: 18 arial;");
-		this.label.setStroke(Colors.VISITING);
-		this.label.setStrokeWidth(2);
+		this.label.setStroke(Color.BLACK);
+		this.label.setStrokeWidth(1);
 		
 		this.priority.setText(String.valueOf(Character.toString('\u221E'))); //+Inf symbol
 		this.priority.setFill(Color.BLACK);
@@ -30,15 +30,21 @@ public class PriorityItem {
 		this.priority.setStyle("-fx-font: 18 arial;"); 
 	
 		this.gr.getChildren().add(this.label);
+		this.gr.getChildren().add(this.priority);
 		this.gr.setVisible(true);
 		this.gr.setStyle("-fx-padding: 5;" + "-fx-border-style: solid inside;"
 		        + "-fx-border-width: 3;" + "-fx-border-insets: 5;"
 		        + "-fx-border-radius: 3;" + "-fx-border-color: black;");
-		this.gr.setSpacing(10);
+		this.gr.setSpacing(20);
 	}
 		
 	public void setPriority(String s) {
 		this.priority.setText(s);
+		this.priority.setFill(Color.BLACK);
+		this.priority.setTextAlignment(TextAlignment.CENTER);
+		this.priority.setStroke(Color.BLACK);
+		this.priority.setStrokeWidth(1);
+		this.priority.setStyle("-fx-font: 18 arial;"); 
 	}	
 	
 	public HBox printPriorityItem() {

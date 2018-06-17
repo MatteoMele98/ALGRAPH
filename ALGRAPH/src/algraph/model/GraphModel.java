@@ -72,6 +72,7 @@ public class GraphModel {
 				percentage0 = Math.random();
 				if(row == col || (percentage0 < 0.4 || percentage0 > 0.7)) {
 					this.adjMatrix[row][col] = 0;
+					this.adjMatrix[col][row] = 0;
 				}
 				else {
 					int weight = rand.nextInt(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
@@ -375,6 +376,11 @@ public class GraphModel {
 		if(noLinkedNode!="")JOptionPane.showMessageDialog(null,"Attenzione: NON devi partire dal nodo"+noLinkedNode);
 
 		return (connected);
+	}
+	
+	
+	public void setAdjMatrix(Integer x[][]){
+		this.adjMatrix=x;
 	}
 			
 }

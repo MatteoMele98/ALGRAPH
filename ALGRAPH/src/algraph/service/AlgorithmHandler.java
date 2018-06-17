@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import algraph.controller.GraphController;
+import algraph.controller.HomeController;
 import algraph.controller.PriorityController;
+import algraph.controller.PseudoCodeController;
 import algraph.controller.VisitedController;
 import algraph.model.GraphModel;
 import algraph.model.NodeModel;
@@ -15,16 +17,19 @@ import algraph.view.GraphView;
 import algraph.view.PriorityItem;
 import javafx.scene.paint.Color;
 
-public class AlgorithmHandler {
+public class AlgorithmHandler extends Thread {
 	private static final int PROGRAM_COUNTER_END = 5;
 	
 	//controllers
+	private HomeController homeController;
 	private GraphController graphController;
 	private VisitedController visitedController;
 	private PriorityController priorityController;
+	private PseudoCodeController pseudoCodeController;
 	
     //auxiliary structures
 	private TreeMap<NodeModel,Boolean> visitedMap = new TreeMap<NodeModel,Boolean>();
+	//leaf ---> parent
 	private HashMap<NodeModel,NodeModel> parentMap = new HashMap<NodeModel,NodeModel>(); 
 	private TreeMap<NodeModel,Integer> priorityMap = new TreeMap<NodeModel,Integer>();
 	private NodeModel root = null;
@@ -33,6 +38,7 @@ public class AlgorithmHandler {
     private GraphView graphV;
 	private NodeModel currentNode;
     private NodeModel adjNode;
+ 
     	
 	private int programCounter = 0;
     
@@ -41,12 +47,14 @@ public class AlgorithmHandler {
 	/*
 	 * @param startNode = root of the tree
 	 */
-	public AlgorithmHandler(GraphController graphController, VisitedController visitedController,
-							  PriorityController priorityController) {
-		
+	public AlgorithmHandler(HomeController homeController,GraphController graphController, VisitedController visitedController,
+							  PriorityController priorityController, PseudoCodeController pseudoCodeController) {
+											
+	this.homeController = homeController;
 	this.graphController = graphController;
 	this.visitedController = visitedController;
 	this.priorityController = priorityController;
+	this.pseudoCodeController = pseudoCodeController;
 	
 	this.graphM = this.graphController.getGraphModel();
 	this.graphV = this.graphController.getGraphView();
@@ -102,21 +110,39 @@ public class AlgorithmHandler {
 			//init controllers
 			//add n FALSE item to the boolean vect
 			newBoolItem = new BoolItem(node.getValue().getLabel());
-			this.visitedController.add(newBoolItem);
+			this.visitedController.add(node.getValue(),newBoolItem);
 			
 			//add n +INF item to the priority vect
 			newPriorityItem = new PriorityItem(node.getValue().getLabel());
-			this.priorityController.add(newPriorityItem);
+			this.priorityController.add(node.getValue(),newPriorityItem);
 		}		
+    }
+    
+    private StringBuilder printMST() {
+    	NodeModel root,leaf;
+    	StringBuilder s = new StringBuilder();
+    	for(Map.Entry<NodeModel, NodeModel> rootLeaf : this.parentMap.entrySet()) {
+    		root = rootLeaf.getValue();
+    		leaf = rootLeaf.getKey();
+    		if(root == null)
+    			s.append("Padre: " + "NIL" + " --> Figlio: " + leaf.getLabel() + "\n");	
+    		else
+    			s.append("Padre: " + root.getLabel() + " --> Figlio: " + leaf.getLabel() + "\n");	
+    	}
+    	return s;
     }
     
    
     // A utility function to find the vertex with minimum key
     // value, from the set of vertices not yet included in MST
-    private NodeModel minKey()
-    {
-    	String s = new String("Cerco il nodo con priorità minima non ancora visitato." + "\n");
+    private NodeModel minKey() throws InterruptedException {
+    	String s = new String("\n Cerco il nodo con priorità minima non ancora visitato." + "\n");
     	System.out.println(s);
+    	
+    	this.pseudoCodeController.addString(s);
+    	this.homeController.printPseudoCode();
+    	
+    	System.out.println(this.pseudoCodeController.getString());
         
     	// Initialize min value
         Integer min = Integer.MAX_VALUE;
@@ -124,11 +150,17 @@ public class AlgorithmHandler {
         
         for (Map.Entry<Integer, NodeModel> node : this.graphM.currentNodesMap.entrySet()) {
         	NodeModel tmp = node.getValue();
-        	System.out.println("Analizzo nodo " + tmp.getLabel() + "." + "\n");
         	
+        	this.pseudoCodeController.addString("Analizzo nodo " + tmp.getLabel() + "." + "\n");
+        	this.homeController.printPseudoCode();
         	//highlith the currently visited node
         	Color prevColor = this.graphV.getNode(tmp.getIndex()).getColor();
         	this.graphV.getNode(tmp.getIndex()).switchColor(Colors.VISITING);
+        	
+        	// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+    		synchronized(this) {
+				this.wait(500);
+			}
         	
         	if (!this.visitedMap.get(tmp) && this.priorityMap.get(tmp) < min)
             {            	
@@ -146,15 +178,13 @@ public class AlgorithmHandler {
  
     
     //execute one step of the alghoritm based on the program counter
-    public void executeStep()
-    { 
+    public void executeStep() throws InterruptedException { 
     	if(this.root == null || this.isFinish()) {
     		return;
     	}
     	
     	switch(programCounter) {
     	case 0:
-    		this.restartAlgorithm();
     		programCounter = 1;
     		break;
     		
@@ -162,10 +192,18 @@ public class AlgorithmHandler {
     		//setto la root dell'albero dando la priorità minima.
     		this.priorityMap.put(this.root, 0);
     		
-    		StringBuilder s1 = new StringBuilder();
-    		s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel());
-    	    System.out.println(s1);
+    		//setto graficamente la priorità della root
+    		this.priorityController.priorityItemMap.get(root).setPriority("0");
     		
+    		// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+    		synchronized(this) {
+				this.wait(1000);
+			}
+    		
+    		StringBuilder s1 = new StringBuilder();
+    		s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel() + "\n");
+    		this.pseudoCodeController.addString(s1);
+    		this.homeController.printPseudoCode();
     		programCounter = 3;
     		break;
     		
@@ -185,11 +223,14 @@ public class AlgorithmHandler {
     		
     		if(finish) {
     			s2.append("Tutti i nodi sono stati visitati." + "\n");
-				s2.append("===========================================" + "\n");
-				//"Albero di copertura minimo: .... "
+				s2.append("================================" + "\n");
+				this.pseudoCodeController.addString(s2);
+				this.pseudoCodeController.addString(this.printMST());
+				this.homeController.printPseudoCode();
 				programCounter = PROGRAM_COUNTER_END;
     		} else {
-    			s2.append("Devono essere vistati altri nodi.");
+    			this.pseudoCodeController.addString("Devono essere vistati altri nodi.");
+    			this.homeController.printPseudoCode();
     			programCounter = 4;
     		}
     		break;
@@ -198,27 +239,44 @@ public class AlgorithmHandler {
     		//il nodo corrente è il nodo con la priorità minima.
     		//all'inizio è la radice perchè settata nel passo 1
 			this.currentNode = minKey();
-						
+			
 			StringBuilder s3 = new StringBuilder();
-			s3.append("Aggiungo " + this.currentNode.getLabel() + " all'albero di copertura." + "\n" );
-			System.out.println(s3);
 			
-			//===========================================================
+			if(!(this.currentNode == null)) {			
+				s3.append("Aggiungo " + this.currentNode.getLabel() + " all'albero di copertura." + "\n" );
+				this.pseudoCodeController.addString(s3);
+				this.homeController.printPseudoCode();
+				//===========================================================
+				
+				//update local variable
+				//setto a visitato il nodo corrente			
+				this.visitedMap.put(this.currentNode,true);
+	
+				//===========================================================
+				
+				//update controller:
+				//evidenzio il nodo corrente appena inserito
+				this.graphV.getNode(this.currentNode).switchColor(Colors.VISITED);
+							
+				//setto a visitato il nodo corrente nel vettore dei visitati
+				this.visitedController.getBoolItem(this.currentNode).setBool(true);
+				
+				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+	    		synchronized(this) {
+					this.wait(1000);
+				}
+	
+				programCounter = 2;
+			} else {
+				s3.append("Tutti i nodi sono stati visitati." + "\n");
+				s3.append("===========================================" + "\n");
+				this.pseudoCodeController.addString(s3);
+				this.pseudoCodeController.addString(this.printMST());
+				this.homeController.printPseudoCode();
+				programCounter = PROGRAM_COUNTER_END;
+			}
+				
 			
-			//update local variable
-			//setto a visitato il nodo corrente			
-			this.visitedMap.put(this.currentNode,true);
-
-			//===========================================================
-			
-			//update controller:
-			//evidenzio il nodo corrente appena inserito
-			this.graphV.getNode(this.currentNode).switchColor(Colors.VISITED);
-						
-			//setto a visitato il nodo corrente nel vettore dei visitati
-			this.visitedController.getBoolItem(this.currentNode.getIndex()).setBool(true);
-
-			programCounter = 2;
 			break;
 			
     	case 4:
@@ -242,6 +300,11 @@ public class AlgorithmHandler {
     					this.graphV.getEdge(this.adjNode, this.parentMap.get(this.adjNode)).switchColor(Colors.DEFAULT);
     				}
     				
+    				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+    	    		synchronized(this) {
+    					this.wait(1000);
+    				}
+    				
     				//=============================================================
     				
     				//update local variables
@@ -259,26 +322,33 @@ public class AlgorithmHandler {
     				this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
     				
     				//aggiorno la priorità del nodo con il nuovo peso
-    				this.priorityController.getPriorityItem(this.adjNode.getIndex()).setPriority(Integer.toString(newPriority));  
+    				this.priorityController.getPriorityItem(this.adjNode).setPriority(Integer.toString(newPriority));
+    				
+    				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+    	    		synchronized(this) {
+    					this.wait(1000);
+    				}
     			}
     		}
     		
     		programCounter = 3;
     	}
-    }
+}
     
     /*
      * Executes all remaining steps of the algorithm
      */
-    public void executeAll() {
+    public void executeAll() throws InterruptedException {
         if (this.root == null || isFinish()) {
             return;
         }
-
-        while (!isFinish()) {
-            executeStep();
+        
+        while(!isFinish()) {
+				this.executeStep();
         }
     }
+    
+
     
     public VisitedController getVisitedController() {
     	return this.visitedController;
@@ -287,6 +357,16 @@ public class AlgorithmHandler {
     public PriorityController getPriorityController() {
     	return this.priorityController;
     }
+
+
+	@Override
+	public void run() {
+		try {
+			this.executeAll();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
     
 }
    

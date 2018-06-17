@@ -9,15 +9,19 @@ import algraph.view.GraphView;
 public class GraphController {
 	private GraphModel graphM;
 	private GraphView graphV;
+	private HomeController homeController;
 	
 	//=========================================================================
-	public GraphController() {
+	public GraphController(HomeController homeController) {
 		graphM = null;
 		graphV = null;
+		this.homeController = homeController;
 	}
 	
 	
-	public GraphController (int numberNodes, Boolean random) throws Exception {
+	public GraphController (int numberNodes, Boolean random, HomeController homeController) throws Exception {
+		this.homeController = homeController;
+		
 		if(random) {
 			graphM = new GraphModel(numberNodes,true);
 			graphV = new GraphView(numberNodes);
@@ -62,7 +66,19 @@ public class GraphController {
 		graphM.deleteEdge(deletedEdge);
 		graphV.deleteEdge(deletedEdge);
 	}
-	//=========================================================================0
+	//=========================================================================
+	public void setMatrix(Integer x[][]){
+		graphM.setAdjMatrix(x);
+		//inserimento archi
+		for(int i=0; i<graphM.getCurrentNumberNodes(); i++) {
+			for(int j=0; j<graphM.getCurrentNumberNodes(); j++) {
+				if(graphM.areConnected(i, j))
+					graphV.insertEdge(i, j);
+			}
+		}
+	}
+	
+	
 	public GraphModel getGraphModel() {
 		return this.graphM;
 	}

@@ -3,21 +3,27 @@ package algraph.controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
 import algraph.model.NodeModel;
 import algraph.service.AlgorithmHandler;
 import algraph.utils.Colors;
+import algraph.view.BoolItem;
 import algraph.view.GraphView;
+import algraph.view.PriorityItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -39,6 +45,7 @@ public class HomeController {
 	private GraphController graphController;
 	private PriorityController priorityController;
 	private VisitedController visitedController;
+	private PseudoCodeController pseudoCodeController;
 	
 	private AlgorithmHandler algorithmHandler;
 	
@@ -46,19 +53,13 @@ public class HomeController {
 	//====================================================
 	
 	public HomeController() throws Exception {
-		this.graphController = new GraphController();
-		this.visitedController = new VisitedController();
-		this.priorityController = new PriorityController();
-		
-		/*
-		 * add alg handler
-		 * 
-		 */
+		this.graphController = new GraphController(this);
+		this.visitedController = new VisitedController(this);
+		this.priorityController = new PriorityController(this);
+		this.pseudoCodeController = new PseudoCodeController(this);
 	}
 	
-	public void algorithmHandlerGenerator() {
-		this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
-	}
+	
 
     @FXML
     private TextField nodeToDelete;
@@ -146,6 +147,9 @@ public class HomeController {
      */
     private void print() {
     	this.graphPane.getChildren().clear();
+    	this.vBoxVisited.getChildren().clear();
+    	this.vBoxParents.getChildren().clear();
+    	
     	for(Integer i=0; i < MAX_NODES; i++) {
             if (this.graphController.getGraphView().getNode(i).getIsVisible()) {
                 this.graphPane.getChildren().add(this.graphController.getGraphView().getNode(i).printNode());
@@ -157,23 +161,31 @@ public class HomeController {
                 }
             }
         }
+    	this.printPseudoCode();
     	this.printVect();
         this.outputTextArea1.setText(this.graphController.getGraphModel().printMatrix().toString());
     }
     
     private void printVect() {
-    	if(!this.visitedController.boolItem.isEmpty()) {
-    		this.vBoxVisited.getChildren().clear();
-    		for(int i = 0; i < this.visitedController.boolItem.size(); i++)
-    		this.vBoxVisited.getChildren().add(this.visitedController.getBoolItem(i).printBoolItem());
-    	}
+    	this.vBoxVisited.getChildren().clear();
+    	this.vBoxParents.getChildren().clear();
     	
-    	if(!this.priorityController.priorityItem.isEmpty()) {
-    		this.vBoxParents.getChildren().clear();
-    		for(int i = 0; i < this.priorityController.priorityItem.size(); i++)
-    		this.vBoxParents.getChildren().add(this.priorityController.getPriorityItem(i).printPriorityItem());
+    	BoolItem n;
+    	for(Map.Entry<NodeModel, BoolItem> visit : this.visitedController.boolItemMap.entrySet()) {
+    		n = visit.getValue();
+    		this.vBoxVisited.getChildren().add(n.printBoolItem());
     	}
-    		
+    			
+    	
+    	PriorityItem p;
+    	for(Map.Entry<NodeModel, PriorityItem> priority : this.priorityController.priorityItemMap.entrySet()) {
+    		p = priority.getValue();
+    		this.vBoxParents.getChildren().add(p.printPriorityItem());
+    	}	
+    }
+    
+    public void printPseudoCode() {
+    	this.outputTextArea.appendText(this.pseudoCodeController.getString());
     }
     
     /*
@@ -221,9 +233,9 @@ public class HomeController {
 
     }
 
-    @FXML
+	@FXML
     void handleMenuItem_Close(ActionEvent event) {
-
+   
     }
 
     @FXML
@@ -233,113 +245,182 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_NextStep(ActionEvent event) {
-    	this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
+    	//this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
     }
 
     @FXML
-    void handleMenuItem_OpenFile(ActionEvent event) throws IOException {
-    	//apre la finestra della scelta del file
-    	FileChooser fileChooser = new FileChooser();
+    void handleMenuItem_OpenFile(ActionEvent event) throws Exception {
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Text File");
         fileChooser.setInitialDirectory(new File("."));
-        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Text Files", "*.txt", "*.csv"));
         this.selectedFile = fileChooser.showOpenDialog(null);
+        double dim=0;
+        Integer x[][] = new Integer[MAX_NODES][MAX_NODES];
         //controlla che sia stato selezionato un file
-        if (selectedFile != null){
+        if (selectedFile != null) {
             this.scanner = new Scanner(new FileReader(selectedFile));
-            int x[][]=new int[20][20];
-            int i=0;
-            int j=0;
-            int dim_int=(int) Math.sqrt(dim(x));
-			double dim_double=Math.sqrt(dim(x));
-			//devo chiudere e aprire lo scanner per far ripartire lo scanner dalla prima riga
-			this.scanner.close();
-			this.scanner=new Scanner(new FileReader(selectedFile));
-			if(dim_double>dim_int || dim_double>dim_int) {
-				System.out.println("C'� un errore nella matrice. Non � una matrice quadrata! Controlla!");
-			}
-			else {
-				//carica la matrice
-				while (i<dim_int) {
-					if(j<dim_int && this.scanner.hasNextInt()) {
-						x[i][j]=this.scanner.nextInt();
-						
-						j++;
-					}else {
-						i++;
-						j=0;
-					}
-		        }
-				//stampa la matrice
-				for(int i1=0; i1<dim_int; i1++) {
-					for(int j1=0; j1<dim_int; j1++) {
-						System.out.print(x[i1][j1]+" ");
-					}
-					System.out.println();
-				}
-			}
-			this.scanner.close();
+            if (checkFile()) {
+                this.scanner.close();
+                this.scanner=new Scanner(new FileReader(selectedFile));
+                //devo chiudere e aprire lo scanner per far ripartire lo scanner dalla prima riga
+                dim=dim();
+                this.scanner.close();
+                this.scanner = new Scanner(new FileReader(selectedFile));
+                if (dim==0) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("C'è un errore nella matrice.Potresti aver inserito un peso non compreso tra -30 e 30\noppure potrebbe non essere una matrice quadrata! Controlla!");
+                    alert.showAndWait();
+                }else {
+                    //carica la matrice
+                    for (int i = 0; i < dim && this.scanner.hasNextInt(); i++){
+                        for(int j = 0; j < dim && this.scanner.hasNextInt(); j++){
+                            x[i][j] = this.scanner.nextInt();
+                        }
+                    }
+                    if(checkMatrix(x,(int)dim)){
+                        //stampa la matrice
+                        for (int i1 = 0; i1 < dim; i1++) {
+                          for (int j1 = 0; j1 < dim; j1++) {
+                             System.out.print(x[i1][j1] + " ");
+                         }
+                            System.out.println();
+                     }
+                     this.scanner.close();
+                     this.graphController = new GraphController((int)dim,false,this);
+                     this.graphController.setMatrix(x);
+                     this.initComboBox();
+                     this.print();
+                     this.graphController.getGraphModel().printMatrix();
+                 }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("C'è un errore nel file!");
+                    alert.showAndWait();
+                    }
+                }
+
+            }
         }
-        
-      }
+    }
+    //checkMatrix
+
+    public boolean checkMatrix(Integer mat[][], int d){
+        boolean flag=true;
+        for(int i = 0; i < d && flag; i++){
+            if(mat[i][i]!=0) flag=false;
+            for(int j = 0; j < d && flag; j++){
+                if(mat[i][j]!=mat[j][i]) flag=false;
+            }
+        }
+        return flag;
+    }
+
     //calcola la dimensione della matrice, serve per fare il controllo se � o meno una matrice n*n
-    public double dim(int x[][]){
-		double dimensione=0;
-		while (this.scanner.hasNextLine()) {
-			scanner.nextInt();
-			dimensione++;
-		}
-		return dimensione;
-	}
+    public double dim(){
+        double dimensione=0;
+        boolean flag = false;
+        while (this.scanner.hasNextInt() && !flag) {
+            int x=scanner.nextInt();
+            if(x<-30 || x>30){
+                flag=true;
+                dimensione=0;
+                //System.out.println(x);
+            }else
+                dimensione++;
+        }
+        System.out.println(Math.sqrt(dimensione));
+        if((Math.sqrt(dimensione) == (int)Math.sqrt(dimensione)) && dimensione!=0)
+            return Math.sqrt(dimensione);
+        else return dimensione;
+    }
+    //controlla file
+    public boolean checkFile(){
+        boolean flag=false;
+        int numero;
+        while(this.scanner.hasNext() && !flag){
+            try {
+                Integer integer = Integer.parseInt(this.scanner.next());
+                numero = integer.intValue();
+                flag = false;
+            }
+            catch (Exception e) {
+                //System.out.print("Matrice non valida! Controlla!");
+                flag = true;
+            }
+        }
+        return !flag;
+    }
     
 
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
-    	this.graphController = new GraphController(10,true);
+    	this.graphController = new GraphController(10,true,this);
     	this.initComboBox();
-    	
     	this.print();
+    	
     	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
     void handleMenuItem_NodesGraph(ActionEvent event) throws NumberFormatException, Exception {
-    	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false);
-    	this.initComboBox();
-    	this.print();
+    	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false,this);
+    	this.initComboBox(); 	
     	
+    	
+    	this.print();
     	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
     void handleMenuItem_RunAnimation(ActionEvent event) {
-    	String c = this.startComboBox3.getValue().toString();
-        int x=c.charAt(0);
-        boolean result = this.graphController.getGraphModel().isConnected(x-65);
-        if (result) {
-            JOptionPane.showMessageDialog(null,"Grafo connesso!");
-
-        } else {
-            JOptionPane.showMessageDialog(null,"Grafo non connesso!");
-        }
+    	this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
+				priorityController, pseudoCodeController);
+		NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
+		
+		this.algorithmHandler.restartAlgotithm(root);
+		this.algorithmHandler.start();  
+		this.print();
     }
 
     @FXML
     void handleMenuItem_Save(ActionEvent event) {
-    	//AVVIA TUTTO ALGORITMO
-    	this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
-    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
-    	
-    	this.algorithmHandler.restartAlgotithm(root);
-    	this.visitedController = this.algorithmHandler.getVisitedController();
-    	this.priorityController = this.algorithmHandler.getPriorityController();
-    	this.algorithmHandler.executeAll();   	
-    	this.print();
+    	try
+        {
+            FileOutputStream prova = new FileOutputStream("C://Users//utente//Desktop//ALGRAPH//ALGRAPH//SavedFile.txt");
+            PrintStream scrivi = new PrintStream(prova);
+            for(int i=0; i<this.graphController.getGraphModel().getCurrentNumberNodes(); i++){
+                if(i!=0) scrivi.println();
+                for(int j=0; j<this.graphController.getGraphModel().getCurrentNumberNodes(); j++){
+                    scrivi.print(this.graphController.getGraphModel().getMatrix()[i][j]+" ");
+                }
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Save Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Salvataggio avvenuto con successo!");
+            alert.showAndWait();
+
+        }
+        catch (IOException e)
+        {
+            System.out.println("Errore: " + e);
+            System.exit(1);
+        }
     }
 
     @FXML
     void handleMenuItem_Stop(ActionEvent event) {
-
+    	//AVVIA TUTTO ALGORITMO
+    	this.algorithmHandler = new AlgorithmHandler(this, graphController,visitedController,
+    												priorityController,pseudoCodeController);
+    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
+    	
+    	this.algorithmHandler.restartAlgotithm(root);
+    	this.algorithmHandler.start();	
+    	this.print();
     }
 
     @FXML

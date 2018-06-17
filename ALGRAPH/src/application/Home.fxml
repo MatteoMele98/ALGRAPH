@@ -94,12 +94,11 @@
                            <items>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
-                                    <ComboBox fx:id="startComboBox1" onAction="#handleMenuItem_Save" prefWidth="150.0" promptText="Inserisci Nodo" />
+                                    <ComboBox fx:id="startComboBox1" onAction="#handleMenuItem_RunAnimation" prefWidth="150.0" promptText="Inserisci Nodo" />
                                  </graphic>
                               </MenuItem>
                            </items>
                         </Menu>
-                                <MenuItem text="Passo-passo" />
                         <Menu mnemonicParsing="false" text="Passo Passo">
                            <items>
                               <MenuItem mnemonicParsing="false">
@@ -111,28 +110,16 @@
                         </Menu>
                             </items>
                         </Menu>
-                        <MenuItem fx:id="stopMenuItem" mnemonicParsing="false" onAction="#handleMenuItem_Stop" text="Stop" />
-                        <MenuItem fx:id="stepMenuItem" mnemonicParsing="false" onAction="#handleMenuItem_NextStep" text="Prossimo passo" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_AnimationSettings" text="Impostazioni" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Debug">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_Debug" text="Mostra il grafo" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Aiuto">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_About" text="Informazioni" />
-                    </items>
-                </Menu>
+                <Menu mnemonicParsing="false" onAction="#handleMenuItem_About" text="Informazioni" />
             </menus>
         </MenuBar>
     </top>
     <center>
-        <SplitPane dividerPositions="0.39984319874559" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.6869854958839671" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
-                <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                <SplitPane dividerPositions="0.7517899761336516" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
@@ -141,12 +128,12 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="609.0">
                             <children>
-                                <TextArea fx:id="outputTextArea" editable="false" prefHeight="333.0" prefWidth="301.0" text="Ciaoooooo" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="0.0">
+                                <TextArea fx:id="outputTextArea" editable="false" prefHeight="333.0" prefWidth="301.0" text="PseudoCode panel" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </TextArea>
-                                <TextArea fx:id="outputTextArea1" editable="false" layoutX="302.0" prefHeight="335.0" prefWidth="105.0" text="Ciao" wrapText="true" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="302.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                                <TextArea fx:id="outputTextArea1" editable="false" layoutX="302.0" prefHeight="335.0" prefWidth="105.0" text="Matrice di adiacenza" wrapText="true" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="302.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font size="18.0" />
                                     </font>
@@ -159,7 +146,7 @@
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="670.0" prefWidth="502.0">
                             <children>
-                                <ScrollPane fx:id="scrollPaneVisited" hbarPolicy="NEVER" layoutX="15.0" layoutY="32.0" onMouseDragEntered="#handleButtonClick_GraphPane" prefHeight="371.0" prefWidth="117.0" AnchorPane.bottomAnchor="267.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="32.0">
+                                <ScrollPane fx:id="scrollPaneVisited" hbarPolicy="NEVER" layoutX="20.0" layoutY="66.0" onMouseDragEntered="#handleButtonClick_GraphPane" prefHeight="375.0" prefWidth="127.0" AnchorPane.bottomAnchor="233.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="66.0">
                                     <content>
                                         <VBox fx:id="vBoxVisited" prefHeight="0.0" prefWidth="100.0" />
                                     </content>
@@ -167,16 +154,16 @@
                                         <Insets />
                                     </opaqueInsets>
                                 </ScrollPane>
-                                <ScrollPane fx:id="scrollPaneParents" hbarPolicy="NEVER" layoutX="465.0" layoutY="30.0" prefHeight="374.0" prefWidth="127.0" AnchorPane.bottomAnchor="266.0" AnchorPane.rightAnchor="17.399999999999977" AnchorPane.topAnchor="30.0">
+                                <ScrollPane fx:id="scrollPaneParents" hbarPolicy="NEVER" layoutX="465.0" layoutY="66.0" prefHeight="375.0" prefWidth="127.0" AnchorPane.bottomAnchor="230.0" AnchorPane.rightAnchor="17.399999999999977" AnchorPane.topAnchor="66.0">
                                     <content>
                                         <VBox fx:id="vBoxParents" prefHeight="0.0" prefWidth="98.0" />
                                     </content>
                                 </ScrollPane>
-                                <Text layoutX="25.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nodi visitati" textAlignment="CENTER" wrappingWidth="107.21875" AnchorPane.leftAnchor="25.0">
+                                <Text layoutX="25.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NODI VISITATI" textAlignment="CENTER" wrappingWidth="107.21875" AnchorPane.leftAnchor="25.0">
                                     <font>
                                         <Font size="14.0" />
                                     </font></Text>
-                                <Text layoutX="456.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vettore dei padri" textAlignment="CENTER" wrappingWidth="148.0186767578125" AnchorPane.rightAnchor="5.581323242187523">
+                                <Text layoutX="456.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VETTORE DELLE PRIORITÁ" textAlignment="CENTER" wrappingWidth="148.0186767578125" AnchorPane.rightAnchor="5.581323242187523">
                                     <font>
                                         <Font size="14.0" />
                                     </font></Text>

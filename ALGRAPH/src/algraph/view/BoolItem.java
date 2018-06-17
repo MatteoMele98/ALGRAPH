@@ -21,7 +21,7 @@ public class BoolItem {
 		this.label.setStroke(Color.BLACK);
 		this.label.setStrokeWidth(1);
 		
-		this.bool.setText("False");
+		this.bool.setText("FALSE");
 		this.bool.setFill(Color.RED);
 		this.bool.setTextAlignment(TextAlignment.CENTER);
 		this.bool.setStroke(Color.RED);
