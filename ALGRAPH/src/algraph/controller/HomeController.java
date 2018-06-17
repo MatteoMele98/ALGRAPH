@@ -58,12 +58,7 @@ public class HomeController {
 		this.priorityController = new PriorityController(this);
 		this.pseudoCodeController = new PseudoCodeController(this);
 	}
-	
-	
 
-    @FXML
-    private TextField nodeToDelete;
-    
     @FXML
     private ResourceBundle resources;
 
@@ -73,19 +68,6 @@ public class HomeController {
     @FXML
     private URL location;
 
-
-    @FXML
-    private MenuItem runMenuItem;
-
-    @FXML
-    private MenuItem sbsMenuItem;
-
-    @FXML
-    private MenuItem stopMenuItem;
-
-    @FXML
-    private MenuItem stepMenuItem;
-
     @FXML
     private Pane graphPane;
 
@@ -94,9 +76,6 @@ public class HomeController {
 
     @FXML
     private TextArea outputTextArea1;
-
-    @FXML
-    private Text coordinateLabel;
 
     @FXML
     private ScrollPane scrollPaneVisited;
@@ -109,16 +88,12 @@ public class HomeController {
 
     @FXML
     private VBox vBoxParents;
-    @FXML
-    private TextField nodeOne;
-
-    @FXML
-    private TextField nodeTwo;
 
     @FXML
     private TextField peso;
     
     private File selectedFile;
+
     private Scanner scanner;
     
     @FXML
@@ -141,7 +116,10 @@ public class HomeController {
 
     @FXML
     private ComboBox edgeDBox2;
-    
+
+    @FXML
+    private ComboBox stepComboBox2;
+
     /*
      * print the entire updated graph
      */
@@ -204,13 +182,14 @@ public class HomeController {
             this.edgeCBoxOne.getItems().add(node.getValue().getLabel());
             this.edgeCBoxTwo.getItems().add(node.getValue().getLabel());
             this.startComboBox1.getItems().add(node.getValue().getLabel());
+            this.stepComboBox2.getItems().add(node.getValue().getLabel());
             this.startComboBox3.getItems().add(node.getValue().getLabel());
             this.edgeDBox1.getItems().add(node.getValue().getLabel());
             this.edgeDBox2.getItems().add(node.getValue().getLabel());
         }
     }
-    
-   
+
+
 
     @FXML
     void handleButtonClick_GraphPane(MouseEvent event) {
@@ -235,17 +214,27 @@ public class HomeController {
 
 	@FXML
     void handleMenuItem_Close(ActionEvent event) {
-   
+
     }
 
     @FXML
     void handleMenuItem_Debug(ActionEvent event) {
 
-    }    
+    }
 
     @FXML
     void handleMenuItem_NextStep(ActionEvent event) {
-    	//this.algorithmHandler = new AlgorithmHandler(graphController,visitedController,priorityController);
+//        if(!this.pendingExecution)  {
+//            this.algorithmHandler = new AlgorithmHandler(this, graphController, visitedController,
+//                    priorityController, pseudoCodeController);
+//            NodeModel root;
+//            root = new NodeModel(this.stepComboBox2.getValue().toString().charAt(0) - 65);
+//            this.algorithmHandler.restartAlgotithm(root, 1000);
+//            this.algorithmHandler.noPauseexecuteStep();
+//        }else{
+//            this.stepComboBox2.setDisable(true);
+//        }
+//            this.print();
     }
 
     @FXML
@@ -378,7 +367,8 @@ public class HomeController {
     
     @FXML
     void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
-    	this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
+
+        this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
 				priorityController, pseudoCodeController);
         NodeModel root;
 		if(this.startComboBox1.getValue()==null) {
@@ -435,7 +425,7 @@ public class HomeController {
     void handleMouseMove_GraphPane(MouseEvent event) {
 
     }
-    
+
     @FXML
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	if(graphController.getGraphModel().getCurrentNumberNodes() <= 14) {
@@ -497,14 +487,9 @@ public class HomeController {
     @FXML
     void initialize() {
     	assert n_nodi != null : "fx:id=\"n_nodi\" was not injected: check your FXML file 'Home.fxml'.";
-        assert runMenuItem != null : "fx:id=\"runMenuItem\" was not injected: check your FXML file 'Home.fxml'.";
-        assert sbsMenuItem != null : "fx:id=\"sbsMenuItem\" was not injected: check your FXML file 'Home.fxml'.";
-        assert stopMenuItem != null : "fx:id=\"stopMenuItem\" was not injected: check your FXML file 'Home.fxml'.";
-        assert stepMenuItem != null : "fx:id=\"stepMenuItem\" was not injected: check your FXML file 'Home.fxml'.";
         assert graphPane != null : "fx:id=\"graphPane\" was not injected: check your FXML file 'Home.fxml'.";
         assert outputTextArea != null : "fx:id=\"outputTextArea\" was not injected: check your FXML file 'Home.fxml'.";
         assert outputTextArea1 != null : "fx:id=\"outputTextArea1\" was not injected: check your FXML file 'Home.fxml'.";
-        assert coordinateLabel != null : "fx:id=\"coordinateLabel\" was not injected: check your FXML file 'Home.fxml'.";
         assert scrollPaneVisited != null : "fx:id=\"scrollPaneVisited\" was not injected: check your FXML file 'Home.fxml'.";
         assert vBoxVisited != null : "fx:id=\"vBoxVisited\" was not injected: check your FXML file 'Home.fxml'.";
         assert scrollPaneParents != null : "fx:id=\"scrollPaneParents\" was not injected: check your FXML file 'Home.fxml'.";
