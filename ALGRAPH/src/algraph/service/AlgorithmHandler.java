@@ -335,23 +335,12 @@ public class AlgorithmHandler extends Thread {
 }
 
 	private NodeModel noPauseminKey(){
-		String s = new String("\n Cerco il nodo con priorit� minima non ancora visitato." + "\n");
-		System.out.println(s);
-
-		this.pseudoCodeController.addString(s);
-		this.homeController.printPseudoCode();
-
-		System.out.println(this.pseudoCodeController.getString());
-
 		// Initialize min value
 		Integer min = Integer.MAX_VALUE;
 		NodeModel minNode = null;
 
 		for (Map.Entry<Integer, NodeModel> node : this.graphM.currentNodesMap.entrySet()) {
 			NodeModel tmp = node.getValue();
-
-			this.pseudoCodeController.addString("Analizzo nodo " + tmp.getLabel() + "." + "\n");
-			this.homeController.printPseudoCode();
 			//highlith the currently visited node
 			Color prevColor = this.graphV.getNode(tmp.getIndex()).getColor();
 			this.graphV.getNode(tmp.getIndex()).switchColor(Colors.VISITING);
@@ -388,16 +377,11 @@ public class AlgorithmHandler extends Thread {
 				//setto graficamente la priorit� della root
 				this.priorityController.priorityItemMap.get(root).setPriority("0");
 
-				StringBuilder s1 = new StringBuilder();
-				s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel() + "\n");
-				this.pseudoCodeController.addString(s1);
-				this.homeController.printPseudoCode();
 				programCounter = 3;
 				break;
 
 			case 2:
 				boolean finish = true;
-				StringBuilder s2 = new StringBuilder();
 				for(Map.Entry<NodeModel, Boolean> visit : visitedMap.entrySet()) {
 					NodeModel visitNode = visit.getKey();
 
@@ -410,15 +394,8 @@ public class AlgorithmHandler extends Thread {
 				}
 
 				if(finish) {
-					s2.append("Tutti i nodi sono stati visitati." + "\n");
-					s2.append("================================" + "\n");
-					this.pseudoCodeController.addString(s2);
-					this.pseudoCodeController.addString(this.printMST());
-					this.homeController.printPseudoCode();
 					programCounter = PROGRAM_COUNTER_END;
 				} else {
-					this.pseudoCodeController.addString("Devono essere vistati altri nodi.");
-					this.homeController.printPseudoCode();
 					programCounter = 4;
 				}
 				break;
@@ -431,11 +408,6 @@ public class AlgorithmHandler extends Thread {
 				StringBuilder s3 = new StringBuilder();
 
 				if(!(this.currentNode == null)) {
-					s3.append("Aggiungo " + this.currentNode.getLabel() + " all'albero di copertura." + "\n" );
-					this.pseudoCodeController.addString(s3);
-					this.homeController.printPseudoCode();
-					//===========================================================
-
 					//update local variable
 					//setto a visitato il nodo corrente
 					this.visitedMap.put(this.currentNode,true);
@@ -451,11 +423,10 @@ public class AlgorithmHandler extends Thread {
 
 					programCounter = 2;
 				} else {
-					s3.append("Tutti i nodi sono stati visitati." + "\n");
+					s3.append("Albero minimo di copertura." + "\n");
 					s3.append("===========================================" + "\n");
 					this.pseudoCodeController.addString(s3);
 					this.pseudoCodeController.addString(this.printMST());
-					this.homeController.printPseudoCode();
 					programCounter = PROGRAM_COUNTER_END;
 				}
 

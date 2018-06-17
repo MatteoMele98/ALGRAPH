@@ -357,6 +357,8 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
+        this.outputTextArea1.clear();
+        this.outputTextArea.clear();
     	this.graphController = new GraphController(10,true,this);
     	this.initComboBox();
     	this.print();
