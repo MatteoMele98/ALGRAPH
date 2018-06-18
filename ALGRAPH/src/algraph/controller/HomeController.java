@@ -60,7 +60,6 @@ public class HomeController {
 		this.visitedController = new VisitedController(this);
 		this.priorityController = new PriorityController(this);
 		this.pseudoCodeController = new PseudoCodeController(this);
-
 	}
 
     @FXML
@@ -158,6 +157,7 @@ public class HomeController {
     private MenuItem nextStep;
     Integer start=null;
 
+    //======================= FUNZIONI DI STAMPA E AGGIORNAMENTO GRAFICO ============================
 
     /*
      * print the entire updated graph
@@ -227,13 +227,15 @@ public class HomeController {
             this.edgeDBox2.getItems().add(node.getValue().getLabel());
         }
     }
-
-
+    
+    //======================================================================================================
 
     @FXML
-    void handleButtonClick_GraphPane(MouseEvent event) {
-
-    }
+    void handleMenuItem_Close(ActionEvent event) {
+        System.exit(0);
+    }    
+    
+    //============================================ ABOUT ====================================================
 
     @FXML
     void handleMenuItem_About(ActionEvent event) {
@@ -245,51 +247,36 @@ public class HomeController {
             e.printStackTrace();
         }
     }
+    
+  //========================================================================================================
 
+  //================================ SALVATAGGIO E APERTURA FILE ===========================================
     @FXML
-    void handleMenuItem_AnimationSettings(ActionEvent event) {
+    void handleMenuItem_Save(ActionEvent event) {
+    	try
+        {
+            FileOutputStream prova = new FileOutputStream("C://Users//utente//Desktop//ALGRAPH//ALGRAPH//SavedFile.txt");
+            PrintStream scrivi = new PrintStream(prova);
+            for(int i=0; i<this.graphController.getGraphModel().getCurrentNumberNodes(); i++){
+                if(i!=0) scrivi.println();
+                for(int j=0; j<this.graphController.getGraphModel().getCurrentNumberNodes(); j++){
+                    scrivi.print(this.graphController.getGraphModel().getMatrix()[i][j]+" ");
+                }
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Save Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Salvataggio avvenuto con successo!");
+            alert.showAndWait();
 
-    }
-
-	@FXML
-    void handleMenuItem_Close(ActionEvent event) {
-        System.exit(0);
-    }
-
-    @FXML
-    void handleMenuItem_Debug(ActionEvent event) {
-
-    }
-
-    @FXML
-    void handleMenuItem_NextStep(ActionEvent event) {
-        if(this.start==null) {
-            this.algorithmHandler = new AlgorithmHandler(this, graphController, visitedController,
-                    priorityController, pseudoCodeController);
-            NodeModel root;
-            root = new NodeModel(this.stepComboBox2.getValue().toString().charAt(0) - 65);
-            this.start=this.stepComboBox2.getValue().toString().charAt(0) - 65;
-            this.algorithmHandler.restartAlgotithm(root, 1000);
-            this.print();
-            this.nextStep.setDisable(false);
-            this.openFile.setDisable(true);
-            this.save.setDisable(true);
-            this.randomGraph.setDisable(true);
-            this.insertNode.setDisable(true);
-            this.deleteNode.setDisable(true);
-            this.createEdge.setDisable(true);
-            this.deleteEdge1.setDisable(true);
-            this.deleteEdge2.setDisable(true);
-            this.startAnimAll.setDisable(true);
-            this.startAnimStep.setDisable(true);
-            this.startStep.setDisable(true);
-            this.graphNoEdge.setDisable(true);
-        }else{
-            this.algorithmHandler.noPauseexecuteStep(true);
-            this.print();
         }
-    }
-
+        catch (IOException e)
+        {
+            System.out.println("Errore: " + e);
+            System.exit(1);
+        }
+    }    
+    
     @FXML
     void handleMenuItem_OpenFile(ActionEvent event) throws Exception {
         FileChooser fileChooser = new FileChooser();
@@ -369,7 +356,6 @@ public class HomeController {
             if(x<-30 || x>30){
                 flag=true;
                 dimensione=0;
-                //System.out.println(x);
             }else
                 dimensione++;
         }
@@ -378,6 +364,8 @@ public class HomeController {
             return Math.sqrt(dimensione);
         else return dimensione;
     }
+    
+    
     //controlla file
     public boolean checkFile(){
         boolean flag=false;
@@ -389,13 +377,14 @@ public class HomeController {
                 flag = false;
             }
             catch (Exception e) {
-                //System.out.print("Matrice non valida! Controlla!");
                 flag = true;
             }
         }
         return !flag;
     }
+   //=====================================================================================================
     
+   //====================================== MODIFICA GRAFO ===============================================
 
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
@@ -403,9 +392,9 @@ public class HomeController {
         this.outputTextArea1.clear();
         this.outputTextArea.clear();
     	this.graphController = new GraphController(10,true,this);
-    	this.initComboBox();
-    	this.print();
     	
+    	this.initComboBox();
+    	this.print();    	
     	this.graphController.getGraphModel().printMatrix();
     }
     
@@ -415,85 +404,12 @@ public class HomeController {
         this.outputTextArea1.clear();
         this.outputTextArea.clear();
     	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false,this);
-    	this.initComboBox(); 	
     	
-    	
+    	this.initComboBox();     	
     	this.print();
     	this.graphController.getGraphModel().printMatrix();
     }
     
-    @FXML
-    void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
-        this.openFile.setDisable(true);
-        this.save.setDisable(true);
-        this.randomGraph.setDisable(true);
-        this.insertNode.setDisable(true);
-        this.deleteNode.setDisable(true);
-        this.createEdge.setDisable(true);
-        this.deleteEdge1.setDisable(true);
-        this.deleteEdge2.setDisable(true);
-        this.startAnimAll.setDisable(true);
-        this.startAnimStep.setDisable(true);
-        this.startStep.setDisable(true);
-        this.graphNoEdge.setDisable(true);
-        this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
-				priorityController, pseudoCodeController);
-        NodeModel root;
-		if(this.startComboBox1.getValue()==null) {
-            root = new NodeModel(this.startComboBox3.getValue().toString().charAt(0) - 65);
-            this.algorithmHandler.restartAlgotithm(root, 1000);
-            this.algorithmHandler.start();
-        }else{
-		    root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0) - 65);
-		    this.algorithmHandler.restartAlgotithm(root,1000);
-            this.algorithmHandler.noPauseexecuteAll();
-        }
-		this.print();
-    }
-
-    @FXML
-    void handleMenuItem_Save(ActionEvent event) {
-    	try
-        {
-            FileOutputStream prova = new FileOutputStream("C://Users//utente//Desktop//ALGRAPH//ALGRAPH//SavedFile.txt");
-            PrintStream scrivi = new PrintStream(prova);
-            for(int i=0; i<this.graphController.getGraphModel().getCurrentNumberNodes(); i++){
-                if(i!=0) scrivi.println();
-                for(int j=0; j<this.graphController.getGraphModel().getCurrentNumberNodes(); j++){
-                    scrivi.print(this.graphController.getGraphModel().getMatrix()[i][j]+" ");
-                }
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Save Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Salvataggio avvenuto con successo!");
-            alert.showAndWait();
-
-        }
-        catch (IOException e)
-        {
-            System.out.println("Errore: " + e);
-            System.exit(1);
-        }
-    }
-
-    @FXML
-    void handleMenuItem_Stop(ActionEvent event) {
-//    	//AVVIA TUTTO ALGORITMO
-//    	this.algorithmHandler = new AlgorithmHandler(this, graphController,visitedController,
-//    												priorityController,pseudoCodeController);
-//    	NodeModel root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0)-65);
-//
-//    	this.algorithmHandler.restartAlgotithm(root);
-//    	this.algorithmHandler.start();
-//    	this.print();
-    }
-
-    @FXML
-    void handleMouseMove_GraphPane(MouseEvent event) {
-
-    }
-
     @FXML
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	if(graphController.getGraphModel().getCurrentNumberNodes() <= 14) {
@@ -551,7 +467,69 @@ public class HomeController {
         this.graphController.getGraphModel().printMatrix();
     }
     
+    //====================================================================================================
+    
+    //========================================= ANIMATION ==============================================
 
+    @FXML
+    void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
+        this.openFile.setDisable(true);
+        this.save.setDisable(true);
+        this.randomGraph.setDisable(true);
+        this.insertNode.setDisable(true);
+        this.deleteNode.setDisable(true);
+        this.createEdge.setDisable(true);
+        this.deleteEdge1.setDisable(true);
+        this.deleteEdge2.setDisable(true);
+        this.startAnimAll.setDisable(true);
+        this.startAnimStep.setDisable(true);
+        this.startStep.setDisable(true);
+        this.graphNoEdge.setDisable(true);
+        this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
+				priorityController, pseudoCodeController);
+        NodeModel root;
+		if(this.startComboBox1.getValue()==null) {
+            root = new NodeModel(this.startComboBox3.getValue().toString().charAt(0) - 65);
+            this.algorithmHandler.restartAlgotithm(root, 1000);
+            this.algorithmHandler.start();
+        }else{
+		    root = new NodeModel(this.startComboBox1.getValue().toString().charAt(0) - 65);
+		    this.algorithmHandler.restartAlgotithm(root,1000);
+            this.algorithmHandler.noPauseexecuteAll();
+        }
+		this.print();
+    }
+    
+    @FXML
+    void handleMenuItem_NextStep(ActionEvent event) {
+        if(this.start==null) {
+            this.algorithmHandler = new AlgorithmHandler(this, graphController, visitedController,
+                    priorityController, pseudoCodeController);
+            NodeModel root;
+            root = new NodeModel(this.stepComboBox2.getValue().toString().charAt(0) - 65);
+            this.start=this.stepComboBox2.getValue().toString().charAt(0) - 65;
+            this.algorithmHandler.restartAlgotithm(root, 1000);
+            this.print();
+            this.nextStep.setDisable(false);
+            this.openFile.setDisable(true);
+            this.save.setDisable(true);
+            this.randomGraph.setDisable(true);
+            this.insertNode.setDisable(true);
+            this.deleteNode.setDisable(true);
+            this.createEdge.setDisable(true);
+            this.deleteEdge1.setDisable(true);
+            this.deleteEdge2.setDisable(true);
+            this.startAnimAll.setDisable(true);
+            this.startAnimStep.setDisable(true);
+            this.startStep.setDisable(true);
+            this.graphNoEdge.setDisable(true);
+        }else{
+            this.algorithmHandler.noPauseexecuteStep(true);
+            this.print();
+        }
+    }
+
+    //====================================================================================================
     @FXML
     void initialize() {
         assert n_nodi != null : "fx:id=\"n_nodi\" was not injected: check your FXML file 'Home.fxml'.";
