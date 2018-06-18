@@ -78,12 +78,7 @@ public class AlgorithmHandler extends Thread {
 		this.speed=s;
     	restartAlgorithm();
     }
-        
-    /*
-     * Clears visitedVect and parentVect.
-     * @param startNode = Set root node
-     * Initialize all the key of the currentNodes to MAX_VALUE 
-     */
+    
     public void restartAlgorithm() {
     	this.programCounter = 0;
     	this.parentMap.clear();
@@ -118,19 +113,35 @@ public class AlgorithmHandler extends Thread {
 		}		
     }
     
+    
+    
     private StringBuilder printMST() {
     	NodeModel root,leaf;
+    	Integer tot = 0;
     	StringBuilder s = new StringBuilder();
     	for(Map.Entry<NodeModel, NodeModel> rootLeaf : this.parentMap.entrySet()) {
     		root = rootLeaf.getValue();
     		leaf = rootLeaf.getKey();
     		if(root == null)
     			s.append("Padre: " + "NIL" + " --> Figlio: " + leaf.getLabel() + "\n");
-    		else
+    		else {
     			s.append("Padre: " + root.getLabel() + " --> Figlio: " + leaf.getLabel() + "\n");	
+    			tot += this.graphM.getWeight(root, leaf);
+    		}
+    			
     	}
+    	s.append("\n Peso totale dell'albero di copertura: " + tot);
     	return s;
     }
+    
+        
+    /*
+     * Clears visitedVect and parentVect.
+     * @param startNode = Set root node
+     * Initialize all the key of the currentNodes to MAX_VALUE 
+     */
+   
+    
     
    
     // A utility function to find the vertex with minimum key
@@ -178,7 +189,6 @@ public class AlgorithmHandler extends Thread {
     
     //execute one step of the alghoritm based on the program counter
     public void executeStep() throws InterruptedException {
-    	this.speed=speed;
     	if(this.root == null || this.isFinish()) {
     		return;
     	}
@@ -279,6 +289,8 @@ public class AlgorithmHandler extends Thread {
 			break;
 			
     	case 4:
+    		StringBuilder s4 = new StringBuilder();
+    		
     		//ciclo su tutti i nodi 
     		for(Map.Entry<Integer, NodeModel> adj : this.graphM.currentNodesMap.entrySet()) {
     			this.adjNode = adj.getValue();
@@ -319,14 +331,21 @@ public class AlgorithmHandler extends Thread {
     				//coloro l'arco dal nodo corrente (padre) al nodo che sto analizzando e viceversa
     				this.graphV.getEdge(this.currentNode, this.adjNode).switchColor(Colors.VISITED);
     				this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
+					
+    				s4.append("Aggiungo l'arco da " + this.currentNode.getLabel() + " a " + this.adjNode.getLabel() + " all'albero minimo di copertura. \n");
+					this.pseudoCodeController.addString(s4);
+					homeController.printPseudoCode();
+					
+					// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
+    	    		synchronized(this) {
+    					this.wait(this.speed);
+    				}					
     				
     				//aggiorno la prioritï¿½ del nodo con il nuovo peso
     				this.priorityController.getPriorityItem(this.adjNode).setPriority(Integer.toString(newPriority));
-    				
-    				// ------------------------ SOSPENDO ESECUZIONE ------------------------------- //
-    	    		synchronized(this) {
-    					this.wait(this.speed);
-    				}
+					s4.append("Aggiorno la prioritá del nodo " + this.adjNode.getLabel() + " con il peso: " + Integer.toString(newPriority) + "\n");
+					this.pseudoCodeController.addString(s4);
+					homeController.printPseudoCode();
     			}
     		}
     		
@@ -381,6 +400,7 @@ public class AlgorithmHandler extends Thread {
 					s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel() + "\n");
 					this.pseudoCodeController.addString(s1);
 				}
+				
 				programCounter = 3;
 				break;
 
@@ -415,8 +435,7 @@ public class AlgorithmHandler extends Thread {
 				break;
 
 			case 3:
-				//il nodo corrente ï¿½ il nodo con la prioritï¿½ minima.
-				//all'inizio ï¿½ la radice perchï¿½ settata nel passo 1
+				//il nodo corrente è il nodo con la priorità minima.
 				this.currentNode = noPauseminKey();
 
 				StringBuilder s3 = new StringBuilder();
@@ -459,6 +478,8 @@ public class AlgorithmHandler extends Thread {
 				break;
 
 			case 4:
+				StringBuilder s4 = new StringBuilder();
+				
 				//ciclo su tutti i nodi
 				for(Map.Entry<Integer, NodeModel> adj : this.graphM.currentNodesMap.entrySet()) {
 					this.adjNode = adj.getValue();
@@ -493,9 +514,17 @@ public class AlgorithmHandler extends Thread {
 						//coloro l'arco dal nodo corrente (padre) al nodo che sto analizzando e viceversa
 						this.graphV.getEdge(this.currentNode, this.adjNode).switchColor(Colors.VISITED);
 						this.graphV.getEdge(this.adjNode,this.currentNode).switchColor(Colors.VISITED);
+						if(v) {
+							s4.append("Aggiungo l'arco da " + this.currentNode.getLabel() + " a " + this.adjNode.getLabel() + " all'albero minimo di copertura. \n");
+							this.pseudoCodeController.addString(s4);
+						}
 
 						//aggiorno la prioritï¿½ del nodo con il nuovo peso
 						this.priorityController.getPriorityItem(this.adjNode).setPriority(Integer.toString(newPriority));
+						if(v) {
+							s4.append("Aggiorno la prioritá del nodo " + this.adjNode.getLabel() + " con il peso: " + Integer.toString(newPriority) + "\n");
+							this.pseudoCodeController.addString(s4);
+						}
 
 					}
 				}
@@ -527,16 +556,6 @@ public class AlgorithmHandler extends Thread {
 			this.noPauseexecuteStep(false);
 		}
 	}
-
-    
-    public VisitedController getVisitedController() {
-    	return this.visitedController;
-    }
-    
-    public PriorityController getPriorityController() {
-    	return this.priorityController;
-    }
-
 
 	@Override
 	public void run() {

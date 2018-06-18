@@ -2,7 +2,6 @@ package algraph.controller;
 
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -12,35 +11,26 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import java.util.TreeMap;
-
 import javax.swing.JOptionPane;
 
 import algraph.model.NodeModel;
 import algraph.service.AlgorithmHandler;
-import algraph.utils.Colors;
 import algraph.view.BoolItem;
-import algraph.view.GraphView;
 import algraph.view.PriorityItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import algraph.model.EdgeModel;
-import algraph.model.GraphModel;
 
 public class HomeController {
 	private static final int MAX_NODES = 15;
@@ -51,9 +41,6 @@ public class HomeController {
 	private PseudoCodeController pseudoCodeController;
 	
 	private AlgorithmHandler algorithmHandler;
-	
-	private boolean pendingExecution;
-	//====================================================
 	
 	public HomeController() throws Exception {
 		this.graphController = new GraphController(this);
@@ -100,28 +87,28 @@ public class HomeController {
     private Scanner scanner;
     
     @FXML
-    private ComboBox deleteComboBox;
+    private ComboBox<String> deleteComboBox;
     
     @FXML
-    private ComboBox edgeCBoxOne;
+    private ComboBox<String> edgeCBoxOne;
 
     @FXML
-    private ComboBox edgeCBoxTwo;
+    private ComboBox<String> edgeCBoxTwo;
 
     @FXML
-    private ComboBox startComboBox1;
+    private ComboBox<String> startComboBox1;
 
     @FXML
-    private ComboBox startComboBox3;
+    private ComboBox<String> startComboBox3;
 
     @FXML
-    private ComboBox edgeDBox1;
+    private ComboBox<String> edgeDBox1;
 
     @FXML
-    private ComboBox edgeDBox2;
+    private ComboBox<String> edgeDBox2;
 
     @FXML
-    private ComboBox stepComboBox2;
+    private ComboBox<String> stepComboBox2;
 
     @FXML
     private MenuItem info;
@@ -158,6 +145,30 @@ public class HomeController {
     Integer start=null;
 
     //======================= FUNZIONI DI STAMPA E AGGIORNAMENTO GRAFICO ============================
+    @FXML
+    void handleButtonClick_GraphPane(MouseEvent event) {
+
+    }
+    
+    @FXML
+    void handleMouseMove_GraphPane(MouseEvent event) {
+
+    }
+    
+    private void disableButton(boolean disable) {
+    	 this.openFile.setDisable(disable);
+         this.save.setDisable(disable);
+         this.randomGraph.setDisable(disable);
+         this.insertNode.setDisable(disable);
+         this.deleteNode.setDisable(disable);
+         this.createEdge.setDisable(disable);
+         this.deleteEdge1.setDisable(disable);
+         this.deleteEdge2.setDisable(disable);
+         this.startAnimAll.setDisable(disable);
+         this.startAnimStep.setDisable(disable);
+         this.startStep.setDisable(disable);
+         this.graphNoEdge.setDisable(disable);
+    }
 
     /*
      * print the entire updated graph
@@ -386,6 +397,19 @@ public class HomeController {
     
    //====================================== MODIFICA GRAFO ===============================================
 
+   private boolean isInteger(TextField input) {
+//	   try {
+//		 Integer weight = Integer.parseInt(input.getText());
+//		 return false;
+//	   } catch (NumberFormatException e) {
+//		   return true;
+//	   }
+	   
+	   Double weight = Double.parseDouble(input.getText());
+	   return weight.isNaN();
+	   
+   }
+    
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
         this.nextStep.setDisable(true);
@@ -403,11 +427,22 @@ public class HomeController {
         this.nextStep.setDisable(true);
         this.outputTextArea1.clear();
         this.outputTextArea.clear();
-    	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false,this);
-    	
-    	this.initComboBox();     	
-    	this.print();
-    	this.graphController.getGraphModel().printMatrix();
+        
+        Integer numberNodes = Integer.parseInt(n_nodi.getText());
+        if(numberNodes < 3 || numberNodes > 15) {
+        	Alert alert = new Alert(AlertType.ERROR);
+        	alert.setTitle("Error Dialog");
+        	alert.setHeaderText("Inserimento nodi");
+        	alert.setContentText("E' possibile inserire sa un minimo di 3 a un massimo di 15 nodi!");
+
+        	alert.showAndWait();
+        } else {
+        	this.graphController = new GraphController(numberNodes,false,this);
+        	
+        	this.initComboBox();     	
+        	this.print();
+        	this.graphController.getGraphModel().printMatrix();
+        }   	
     }
     
     @FXML
@@ -417,19 +452,35 @@ public class HomeController {
     	 		this.print();
     	 		this.initComboBox();
     	 		this.graphController.getGraphModel().printMatrix();
-    	 } else 
-    		JOptionPane.showMessageDialog(null,"Puoi inserire al massimo 15 nodi!");
+    	 } else {
+    		Alert alert = new Alert(AlertType.ERROR);
+         	alert.setTitle("Error Dialog");
+         	alert.setHeaderText("Inserimento nodi");
+         	alert.setContentText("E' possibile inserire massimo 15 nodi!");
+
+         	alert.showAndWait();
+    	 }
+    		
     }
     
     @FXML
     void handleMenuDeleteNode(ActionEvent event) throws Exception {
-    	int c = this.deleteComboBox.getValue().toString().charAt(0);
-    	NodeModel deletedNode = new NodeModel(c-65);
-    	graphController.deleteNode(deletedNode);
-    	this.initComboBox();
-    	this.print();
-    	
-    	this.graphController.getGraphModel().printMatrix();
+    	if(this.graphController.getGraphModel().getCurrentNumberNodes() == 3) {
+    		Alert alert = new Alert(AlertType.ERROR);
+    		alert.setTitle("Error Dialog");
+    		alert.setHeaderText("Cancellazione Nodo");
+    		alert.setContentText("Il grafo deve avere minimo 3 nodi!");
+
+    		alert.showAndWait();
+    	} else {
+    		int c = this.deleteComboBox.getValue().toString().charAt(0);
+        	NodeModel deletedNode = new NodeModel(c-65);
+        	graphController.deleteNode(deletedNode);
+        	this.initComboBox();
+        	this.print();
+        	
+        	this.graphController.getGraphModel().printMatrix();
+    	}
     }  	
 
     /*
@@ -437,22 +488,38 @@ public class HomeController {
      */
     @FXML
     void handleMenuItem_InsertEdge(ActionEvent event) throws Exception {
-        Double weight = Double.parseDouble(this.peso.getText());
+        Integer weight = Integer.parseInt(this.peso.getText());
 
-        if(weight > 30 || weight < -30 || weight.isNaN())
-            JOptionPane.showMessageDialog(null,"Inserire un peso da 15 a -15.");
+        if(weight > 30 || weight < -30 || isInteger(this.peso)) {
+        	Alert alert = new Alert(AlertType.ERROR);
+        	alert.setTitle("Error Dialog");
+        	alert.setHeaderText("Inserimento arco");
+        	alert.setContentText("E' possibile un arco di peso compreso tra -15 e +15!");
+
+        	alert.showAndWait();
+        }
+            
         else {
             NodeModel start = new NodeModel(this.edgeCBoxOne.getValue().toString().charAt(0) - 65);
             NodeModel end = new NodeModel(this.edgeCBoxTwo.getValue().toString().charAt(0) - 65);
-            EdgeModel newEdge = new EdgeModel(start, end, weight.intValue());
-            graphController.insertEdge(newEdge);
-            this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
+            if(start.getLabel() == end.getLabel()) {
+            	Alert alert = new Alert(AlertType.ERROR);
+            	alert.setTitle("Error Dialog");
+            	alert.setHeaderText("Inserimento arco");
+            	alert.setContentText("Non è possibile inserire un arco tra lo stesso nodo!");
 
-            this.print();
-            initComboBox();
-            this.peso.setText("");
+            	alert.showAndWait();
+            } else {
+            	EdgeModel newEdge = new EdgeModel(start, end, weight);
+                graphController.insertEdge(newEdge);
+                this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
+
+                this.print();
+                initComboBox();
+                this.peso.setText("");
+                this.graphController.getGraphModel().printMatrix();
+            }
         }
-        this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
@@ -473,18 +540,8 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
-        this.openFile.setDisable(true);
-        this.save.setDisable(true);
-        this.randomGraph.setDisable(true);
-        this.insertNode.setDisable(true);
-        this.deleteNode.setDisable(true);
-        this.createEdge.setDisable(true);
-        this.deleteEdge1.setDisable(true);
-        this.deleteEdge2.setDisable(true);
-        this.startAnimAll.setDisable(true);
-        this.startAnimStep.setDisable(true);
-        this.startStep.setDisable(true);
-        this.graphNoEdge.setDisable(true);
+        this.disableButton(true);
+        
         this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
 				priorityController, pseudoCodeController);
         NodeModel root;
@@ -497,6 +554,10 @@ public class HomeController {
 		    this.algorithmHandler.restartAlgotithm(root,1000);
             this.algorithmHandler.noPauseexecuteAll();
         }
+		
+
+		
+		
 		this.print();
     }
     
@@ -510,23 +571,27 @@ public class HomeController {
             this.start=this.stepComboBox2.getValue().toString().charAt(0) - 65;
             this.algorithmHandler.restartAlgotithm(root, 1000);
             this.print();
+            this.disableButton(true);
             this.nextStep.setDisable(false);
-            this.openFile.setDisable(true);
-            this.save.setDisable(true);
-            this.randomGraph.setDisable(true);
-            this.insertNode.setDisable(true);
-            this.deleteNode.setDisable(true);
-            this.createEdge.setDisable(true);
-            this.deleteEdge1.setDisable(true);
-            this.deleteEdge2.setDisable(true);
-            this.startAnimAll.setDisable(true);
-            this.startAnimStep.setDisable(true);
-            this.startStep.setDisable(true);
-            this.graphNoEdge.setDisable(true);
+            
+           
         }else{
             this.algorithmHandler.noPauseexecuteStep(true);
             this.print();
         }
+        
+        this.openFile.setDisable(false);
+        this.save.setDisable(false);
+        this.randomGraph.setDisable(false);
+        this.insertNode.setDisable(false);
+        this.deleteNode.setDisable(false);
+        this.createEdge.setDisable(false);
+        this.deleteEdge1.setDisable(false);
+        this.deleteEdge2.setDisable(false);
+        this.startAnimAll.setDisable(false);
+        this.startAnimStep.setDisable(false);
+        this.startStep.setDisable(false);
+        this.graphNoEdge.setDisable(false);
     }
 
     //====================================================================================================

@@ -92,11 +92,14 @@ public class GraphView {
 	 * @param edge = inserted edge
 	 */
 	public void insertEdge(EdgeModel edge) {
-		Point centerStart = new Point(this.nodes[edge.getStartNode().getIndex()].getPosX(), this.nodes[edge.getStartNode().getIndex()].getPosY());
-		Point centerEnd = new Point(this.nodes[edge.getEndNode().getIndex()].getPosX(), this.nodes[edge.getEndNode().getIndex()].getPosY());
+		if(edge.getStartNode() != edge.getEndNode()) {
+			Point centerStart = new Point(this.nodes[edge.getStartNode().getIndex()].getPosX(), this.nodes[edge.getStartNode().getIndex()].getPosY());
+			Point centerEnd = new Point(this.nodes[edge.getEndNode().getIndex()].getPosX(), this.nodes[edge.getEndNode().getIndex()].getPosY());
+			
+			this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = new EdgeView(centerStart,centerEnd,RADIUS);		
+			this.edge[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = new EdgeView(centerEnd,centerStart,RADIUS);		
+		}
 		
-		this.edge[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = new EdgeView(centerStart,centerEnd,RADIUS);		
-		this.edge[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = new EdgeView(centerEnd,centerStart,RADIUS);		
 	}
 	
 	/*

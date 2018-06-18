@@ -23,14 +23,14 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_OpenFile" text="Apri.." />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_Save" text="Salva" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_RandomGraph" text="Grafo Casuale" />
+                        <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#handleMenuItem_OpenFile" text="Apri.." />
+                        <MenuItem fx:id="save" mnemonicParsing="false" onAction="#handleMenuItem_Save" text="Salva" />
+                        <MenuItem fx:id="randomGraph" mnemonicParsing="false" onAction="#handleMenuItem_RandomGraph" text="Grafo Casuale" />
                         <Menu mnemonicParsing="false" text="Crea Grafo..">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_NodesGraph" text="Numero di nodi">
+                                <MenuItem fx:id="graphNoEdge" mnemonicParsing="false" onAction="#handleMenuItem_NodesGraph" text="Numero di nodi">
                                     <graphic>
-                                        <TextField fx:id="n_nodi" promptText="Max node: 20" />
+                                        <TextField fx:id="n_nodi" promptText="Max node: 15" />
                                     </graphic>
                                 </MenuItem>
                             </items>
@@ -41,17 +41,17 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Modifica">
                     <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleMenuItem_InsertNode" text="Inserisci Nodo" />
+                  <MenuItem fx:id="insertNode" mnemonicParsing="false" onAction="#handleMenuItem_InsertNode" text="Inserisci Nodo" />
                         <Menu mnemonicParsing="false" text="Cancella Nodo">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuDeleteNode">
+                        <MenuItem fx:id="deleteNode" mnemonicParsing="false" onAction="#handleMenuDeleteNode">
                            <graphic>
                               <ComboBox fx:id="deleteComboBox" prefWidth="150.0" promptText="Cancella Nodo" />
                            </graphic>
                         </MenuItem>
                      </items>
                         </Menu>
-                  <Menu mnemonicParsing="false" onAction="#handleMenuItem_InsertEdge" text="Crea arco">
+                  <Menu fx:id="createEdge" mnemonicParsing="false" onAction="#handleMenuItem_InsertEdge" text="Crea arco">
                      <items>
                         <MenuItem mnemonicParsing="false">
                            <graphic>
@@ -72,12 +72,12 @@
                   </Menu>
                   <Menu mnemonicParsing="false" onAction="#handleMenuItem_DeleteEdge" text="Cancella arco">
                      <items>
-                        <MenuItem mnemonicParsing="false">
+                        <MenuItem fx:id="deleteEdge1" mnemonicParsing="false">
                            <graphic>
                               <ComboBox fx:id="edgeDBox1" promptText="Inserisci Nodo Uno" />
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false">
+                        <MenuItem fx:id="deleteEdge2" mnemonicParsing="false">
                            <graphic>
                               <ComboBox fx:id="edgeDBox2" promptText="Inserisci Nodo Due" />
                            </graphic>
@@ -92,18 +92,27 @@
                             <items>
                         <Menu mnemonicParsing="false" text="Avvia">
                            <items>
-                              <MenuItem mnemonicParsing="false">
+                              <MenuItem fx:id="startAnimAll" mnemonicParsing="false">
                                  <graphic>
                                     <ComboBox fx:id="startComboBox1" onAction="#handleMenuItem_RunAnimation" prefWidth="150.0" promptText="Inserisci Nodo" />
                                  </graphic>
                               </MenuItem>
                            </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Passo Passo">
+                        <Menu mnemonicParsing="false" text="Animazione">
                            <items>
-                              <MenuItem mnemonicParsing="false">
+                              <MenuItem fx:id="startAnimStep" mnemonicParsing="false">
                                  <graphic>
                                     <ComboBox fx:id="startComboBox3" onAction="#handleMenuItem_RunAnimation" prefWidth="150.0" promptText="Inserisci Nodo" />
+                                 </graphic>
+                              </MenuItem>
+                           </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Passo Passo">
+                           <items>
+                              <MenuItem fx:id="startStep" mnemonicParsing="false">
+                                 <graphic>
+                                    <ComboBox fx:id="stepComboBox2" onAction="#handleMenuItem_NextStep" prefWidth="150.0" promptText="Inserisci Nodo" />
                                  </graphic>
                               </MenuItem>
                            </items>
@@ -112,7 +121,15 @@
                         </Menu>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" onAction="#handleMenuItem_About" text="Informazioni" />
+                <Menu mnemonicParsing="false" text="Informazioni">
+               <items>
+                  <MenuItem fx:id="info" mnemonicParsing="false" onAction="#handleMenuItem_About" text="Info" />
+               </items></Menu>
+            <Menu mnemonicParsing="false" text="Next Step">
+               <items>
+                  <MenuItem fx:id="nextStep" mnemonicParsing="false" onAction="#handleMenuItem_NextStep" text="Next Step" />
+               </items>
+            </Menu>
             </menus>
         </MenuBar>
     </top>
@@ -126,14 +143,14 @@
                                 <Pane fx:id="graphPane" onMouseClicked="#handleButtonClick_GraphPane" onMouseMoved="#handleMouseMove_GraphPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                             </children>
                         </AnchorPane>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="609.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="800.0">
                             <children>
-                                <TextArea fx:id="outputTextArea" editable="false" prefHeight="333.0" prefWidth="301.0" text="PseudoCode panel" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="0.0">
+                                <TextArea fx:id="outputTextArea" editable="false" prefHeight="164.0" prefWidth="350.0" text="PseudoCode panel" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </TextArea>
-                                <TextArea fx:id="outputTextArea1" editable="false" layoutX="302.0" prefHeight="335.0" prefWidth="105.0" text="Matrice di adiacenza" wrapText="true" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="302.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                                <TextArea fx:id="outputTextArea1" editable="false" layoutX="302.0" prefHeight="250.0" prefWidth="397.0" text="Matrice di adiacenza" wrapText="true" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font size="18.0" />
                                     </font>

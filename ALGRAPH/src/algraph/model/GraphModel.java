@@ -118,9 +118,13 @@ public class GraphModel {
 	 * - u != v
 	 * - MIN_WEIGHT < w < MAX_WEIGHT
 	 */
-	public void insertEdge(EdgeModel edge) {
-		this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
-		this.adjMatrix[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = edge.getWeight();
+	public void insertEdge(EdgeModel edge) throws Exception {
+		if(edge.getStartNode().getLabel() == edge.getEndNode().getLabel()) {
+			throw new Exception();
+		} else {
+			this.adjMatrix[edge.getStartNode().getIndex()][edge.getEndNode().getIndex()] = edge.getWeight();
+			this.adjMatrix[edge.getEndNode().getIndex()][edge.getStartNode().getIndex()] = edge.getWeight();
+		}
 	}
 	
 	/*

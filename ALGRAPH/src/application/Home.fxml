@@ -30,7 +30,7 @@
                             <items>
                                 <MenuItem fx:id="graphNoEdge" mnemonicParsing="false" onAction="#handleMenuItem_NodesGraph" text="Numero di nodi">
                                     <graphic>
-                                        <TextField fx:id="n_nodi" promptText="Max node: 20" />
+                                        <TextField fx:id="n_nodi" promptText="Max node: 15" />
                                     </graphic>
                                 </MenuItem>
                             </items>
