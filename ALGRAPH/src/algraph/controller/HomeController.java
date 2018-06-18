@@ -1,7 +1,8 @@
 package algraph.controller;
 
 
-import java.awt.Desktop;
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -30,6 +31,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -57,6 +60,7 @@ public class HomeController {
 		this.visitedController = new VisitedController(this);
 		this.priorityController = new PriorityController(this);
 		this.pseudoCodeController = new PseudoCodeController(this);
+
 	}
 
     @FXML
@@ -122,6 +126,38 @@ public class HomeController {
 
     @FXML
     private MenuItem info;
+    @FXML
+    private MenuItem openFile;
+
+    @FXML
+    private MenuItem save;
+    @FXML
+    private MenuItem randomGraph;
+    @FXML
+    private MenuItem insertNode;
+
+    @FXML
+    private MenuItem deleteNode;
+    @FXML
+    private MenuItem createEdge;
+    @FXML
+    private MenuItem deleteEdge1;
+    @FXML
+    private MenuItem deleteEdge2;
+
+    @FXML
+    private MenuItem startAnimAll;
+    @FXML
+    private MenuItem startAnimStep;
+    @FXML
+    private MenuItem startStep;
+    @FXML
+    private MenuItem graphNoEdge;
+
+    @FXML
+    private MenuItem nextStep;
+    Integer start=null;
+
 
     /*
      * print the entire updated graph
@@ -217,7 +253,7 @@ public class HomeController {
 
 	@FXML
     void handleMenuItem_Close(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -227,17 +263,31 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_NextStep(ActionEvent event) {
-//        if(!this.pendingExecution)  {
-//            this.algorithmHandler = new AlgorithmHandler(this, graphController, visitedController,
-//                    priorityController, pseudoCodeController);
-//            NodeModel root;
-//            root = new NodeModel(this.stepComboBox2.getValue().toString().charAt(0) - 65);
-//            this.algorithmHandler.restartAlgotithm(root, 1000);
-//            this.algorithmHandler.noPauseexecuteStep();
-//        }else{
-//            this.stepComboBox2.setDisable(true);
-//        }
-//            this.print();
+        if(this.start==null) {
+            this.algorithmHandler = new AlgorithmHandler(this, graphController, visitedController,
+                    priorityController, pseudoCodeController);
+            NodeModel root;
+            root = new NodeModel(this.stepComboBox2.getValue().toString().charAt(0) - 65);
+            this.start=this.stepComboBox2.getValue().toString().charAt(0) - 65;
+            this.algorithmHandler.restartAlgotithm(root, 1000);
+            this.print();
+            this.nextStep.setDisable(false);
+            this.openFile.setDisable(true);
+            this.save.setDisable(true);
+            this.randomGraph.setDisable(true);
+            this.insertNode.setDisable(true);
+            this.deleteNode.setDisable(true);
+            this.createEdge.setDisable(true);
+            this.deleteEdge1.setDisable(true);
+            this.deleteEdge2.setDisable(true);
+            this.startAnimAll.setDisable(true);
+            this.startAnimStep.setDisable(true);
+            this.startStep.setDisable(true);
+            this.graphNoEdge.setDisable(true);
+        }else{
+            this.algorithmHandler.noPauseexecuteStep(true);
+            this.print();
+        }
     }
 
     @FXML
@@ -349,6 +399,7 @@ public class HomeController {
 
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
+        this.nextStep.setDisable(true);
         this.outputTextArea1.clear();
         this.outputTextArea.clear();
     	this.graphController = new GraphController(10,true,this);
@@ -360,6 +411,9 @@ public class HomeController {
     
     @FXML
     void handleMenuItem_NodesGraph(ActionEvent event) throws NumberFormatException, Exception {
+        this.nextStep.setDisable(true);
+        this.outputTextArea1.clear();
+        this.outputTextArea.clear();
     	this.graphController = new GraphController(Integer.parseInt(n_nodi.getText()),false,this);
     	this.initComboBox(); 	
     	
@@ -370,7 +424,18 @@ public class HomeController {
     
     @FXML
     void handleMenuItem_RunAnimation(ActionEvent event) throws Exception  {
-
+        this.openFile.setDisable(true);
+        this.save.setDisable(true);
+        this.randomGraph.setDisable(true);
+        this.insertNode.setDisable(true);
+        this.deleteNode.setDisable(true);
+        this.createEdge.setDisable(true);
+        this.deleteEdge1.setDisable(true);
+        this.deleteEdge2.setDisable(true);
+        this.startAnimAll.setDisable(true);
+        this.startAnimStep.setDisable(true);
+        this.startStep.setDisable(true);
+        this.graphNoEdge.setDisable(true);
         this.algorithmHandler = new AlgorithmHandler(this,graphController,visitedController,
 				priorityController, pseudoCodeController);
         NodeModel root;
@@ -489,7 +554,7 @@ public class HomeController {
 
     @FXML
     void initialize() {
-    	assert n_nodi != null : "fx:id=\"n_nodi\" was not injected: check your FXML file 'Home.fxml'.";
+        assert n_nodi != null : "fx:id=\"n_nodi\" was not injected: check your FXML file 'Home.fxml'.";
         assert graphPane != null : "fx:id=\"graphPane\" was not injected: check your FXML file 'Home.fxml'.";
         assert outputTextArea != null : "fx:id=\"outputTextArea\" was not injected: check your FXML file 'Home.fxml'.";
         assert outputTextArea1 != null : "fx:id=\"outputTextArea1\" was not injected: check your FXML file 'Home.fxml'.";

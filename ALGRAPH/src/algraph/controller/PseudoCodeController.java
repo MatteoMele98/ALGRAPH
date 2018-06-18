@@ -12,11 +12,11 @@ public class PseudoCodeController {
 	}
 	
 	public void addString(StringBuilder s) {
-		this.pseudoCode += s.toString();
+		this.pseudoCode = s.toString();
 	}
 	
 	public void addString(String s) {
-		this.pseudoCode += s;
+		this.pseudoCode = s;
 	}
 	
 	public String getString() {

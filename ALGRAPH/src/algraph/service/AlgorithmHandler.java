@@ -15,6 +15,7 @@ import algraph.utils.Colors;
 import algraph.view.BoolItem;
 import algraph.view.GraphView;
 import algraph.view.PriorityItem;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 public class AlgorithmHandler extends Thread {
@@ -124,7 +125,7 @@ public class AlgorithmHandler extends Thread {
     		root = rootLeaf.getValue();
     		leaf = rootLeaf.getKey();
     		if(root == null)
-    			s.append("Padre: " + "NIL" + " --> Figlio: " + leaf.getLabel() + "\n");	
+    			s.append("Padre: " + "NIL" + " --> Figlio: " + leaf.getLabel() + "\n");
     		else
     			s.append("Padre: " + root.getLabel() + " --> Figlio: " + leaf.getLabel() + "\n");	
     	}
@@ -135,12 +136,11 @@ public class AlgorithmHandler extends Thread {
     // A utility function to find the vertex with minimum key
     // value, from the set of vertices not yet included in MST
     private NodeModel minKey() throws InterruptedException {
-    	String s = new String("\n Cerco il nodo con priorit� minima non ancora visitato." + "\n");
+    	String s = new String("\nCerco il nodo con priorità minima non ancora visitato." + "\n");
     	System.out.println(s);
     	
     	this.pseudoCodeController.addString(s);
-    	this.homeController.printPseudoCode();
-    	
+		this.homeController.printPseudoCode();
     	System.out.println(this.pseudoCodeController.getString());
         
     	// Initialize min value
@@ -229,7 +229,6 @@ public class AlgorithmHandler extends Thread {
 				programCounter = PROGRAM_COUNTER_END;
     		} else {
     			this.pseudoCodeController.addString("Devono essere vistati altri nodi.");
-    			this.homeController.printPseudoCode();
     			programCounter = 4;
     		}
     		break;
@@ -273,6 +272,7 @@ public class AlgorithmHandler extends Thread {
 				this.pseudoCodeController.addString(this.printMST());
 				this.homeController.printPseudoCode();
 				programCounter = PROGRAM_COUNTER_END;
+
 			}
 				
 			
@@ -361,7 +361,7 @@ public class AlgorithmHandler extends Thread {
 
 
 	//execute one step of the alghoritm based on the program counter
-	public void noPauseexecuteStep() {
+	public void noPauseexecuteStep(boolean v) {
 		if(this.root == null || this.isFinish()) {
 			return;
 		}
@@ -376,7 +376,11 @@ public class AlgorithmHandler extends Thread {
 
 				//setto graficamente la priorit� della root
 				this.priorityController.priorityItemMap.get(root).setPriority("0");
-
+				if(v) {
+					StringBuilder s1 = new StringBuilder();
+					s1.append("Setto la radice dell'albero al Nodo: " + this.graphM.currentNodesMap.get(this.root.getIndex()).getLabel() + "\n");
+					this.pseudoCodeController.addString(s1);
+				}
 				programCounter = 3;
 				break;
 
@@ -387,9 +391,19 @@ public class AlgorithmHandler extends Thread {
 
 					if (!this.graphM.noLinkedNode.contains(visitNode)) {
 						if (visit.getValue()) {
+								StringBuilder s2 = new StringBuilder();
+								s2.append("Tutti i nodi sono stati visitati." + "\n");
+								s2.append("================================" + "\n");
+								this.pseudoCodeController.addString(s2);
+								this.pseudoCodeController.addString(this.printMST());
+
 							finish = finish && visit.getValue();
-						}  else
+						}  else {
+							if(v) {
+								this.pseudoCodeController.addString("Devono essere vistati altri nodi.\n");
+							}
 							finish = finish && false;
+						}
 					}
 				}
 
@@ -408,6 +422,10 @@ public class AlgorithmHandler extends Thread {
 				StringBuilder s3 = new StringBuilder();
 
 				if(!(this.currentNode == null)) {
+					if (v){
+						s3.append("Aggiungo " + this.currentNode.getLabel() + " all'albero di copertura." + "\n");
+						this.pseudoCodeController.addString(s3);
+					}
 					//update local variable
 					//setto a visitato il nodo corrente
 					this.visitedMap.put(this.currentNode,true);
@@ -423,10 +441,17 @@ public class AlgorithmHandler extends Thread {
 
 					programCounter = 2;
 				} else {
-					s3.append("Albero minimo di copertura." + "\n");
-					s3.append("===========================================" + "\n");
-					this.pseudoCodeController.addString(s3);
-					this.pseudoCodeController.addString(this.printMST());
+
+						s3.append("Albero minimo di copertura." + "\n");
+						s3.append("===========================================" + "\n");
+						this.pseudoCodeController.addString(s3);
+						this.pseudoCodeController.addString(this.printMST());
+
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setTitle("Info Dialog");
+					alert.setHeaderText(null);
+					alert.setContentText("Esecuzione terminata con successo!");
+					alert.showAndWait();
 					programCounter = PROGRAM_COUNTER_END;
 				}
 
@@ -499,7 +524,7 @@ public class AlgorithmHandler extends Thread {
 			return;
 		}
 		while(!isFinish()) {
-			this.noPauseexecuteStep();
+			this.noPauseexecuteStep(false);
 		}
 	}
 

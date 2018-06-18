@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 
+import java.awt.event.KeyEvent;
+
 
 public class Main extends Application {
 	@Override
