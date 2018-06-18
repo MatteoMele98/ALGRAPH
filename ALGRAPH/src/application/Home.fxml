@@ -121,7 +121,10 @@
                         </Menu>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" onAction="#handleMenuItem_About" text="Informazioni" />
+                <Menu mnemonicParsing="false" text="Informazioni">
+               <items>
+                  <MenuItem fx:id="info" mnemonicParsing="false" onAction="#handleMenuItem_About" text="Info" />
+               </items></Menu>
             </menus>
         </MenuBar>
     </top>

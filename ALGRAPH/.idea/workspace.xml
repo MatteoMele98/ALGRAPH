@@ -7,9 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b81cbc7-ae32-49c6-a3b0-bae19f73b1c9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ALGRAPH_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algraph/controller/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/algraph/controller/HomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/Home.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/Home.fxml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,8 +36,18 @@
       <file leaf-file-name="HomeController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/algraph/controller/HomeController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="492" column="8" selection-start-line="492" selection-start-column="8" selection-end-line="492" selection-end-column="8" />
+            <state relative-caret-position="175">
+              <caret line="204" column="121" selection-start-line="204" selection-start-column="121" selection-end-line="204" selection-end-column="121" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Home.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/application/Home.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="127">
+              <caret line="123" column="54" selection-start-line="123" selection-start-column="54" selection-end-line="123" selection-end-column="54" />
             </state>
           </provider>
         </entry>
@@ -57,6 +67,7 @@
       <find>comboBox</find>
       <find>edgeDBox1</find>
       <find>pas</find>
+      <find>informa</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -79,8 +90,8 @@
         <option value="$PROJECT_DIR$/src/algraph/view/ParentItem.java" />
         <option value="$PROJECT_DIR$/src/algraph/controller/GraphController.java" />
         <option value="$PROJECT_DIR$/src/algraph/model/GraphModel.java" />
-        <option value="$PROJECT_DIR$/src/application/Home.fxml" />
         <option value="$PROJECT_DIR$/src/algraph/service/AlgorithmHandler.java" />
+        <option value="$PROJECT_DIR$/src/application/Home.fxml" />
         <option value="$PROJECT_DIR$/src/algraph/controller/HomeController.java" />
       </list>
     </option>
@@ -106,6 +117,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -113,11 +125,27 @@
               <item name="ALGRAPH" type="b2602c69:ProjectViewProjectNode" />
               <item name="ALGRAPH" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="ALGRAPH" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ALGRAPH" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ALGRAPH" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ALGRAPH" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="algraph" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ALGRAPH" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ALGRAPH" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
@@ -239,14 +267,16 @@
       <workItem from="1529269430028" duration="984000" />
       <workItem from="1529270507904" duration="1532000" />
       <workItem from="1529272273506" duration="157000" />
+      <workItem from="1529302433817" duration="347000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79942000" />
+    <option name="totallyTimeSpent" value="80289000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -262,7 +292,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21940105" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21940105" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -571,14 +601,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/application/Home.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2646">
-          <caret line="126" column="39" selection-start-line="126" selection-start-column="39" selection-end-line="126" selection-end-column="39" />
-        </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_151/src.zip!/java/lang/Thread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="21">
@@ -607,10 +629,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/application/Home.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="123" column="54" selection-start-line="123" selection-start-column="54" selection-end-line="123" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/algraph/controller/HomeController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="492" column="8" selection-start-line="492" selection-start-column="8" selection-end-line="492" selection-end-column="8" />
+        <state relative-caret-position="175">
+          <caret line="204" column="121" selection-start-line="204" selection-start-column="121" selection-end-line="204" selection-end-column="121" />
         </state>
       </provider>
     </entry>

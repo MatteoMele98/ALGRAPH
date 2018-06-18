@@ -120,6 +120,9 @@ public class HomeController {
     @FXML
     private ComboBox stepComboBox2;
 
+    @FXML
+    private MenuItem info;
+
     /*
      * print the entire updated graph
      */
@@ -199,7 +202,7 @@ public class HomeController {
     @FXML
     void handleMenuItem_About(ActionEvent event) {
     	try {
-            Desktop.getDesktop().browse(new URL("http://www.cs.unibo.it/~sacerdot/logica/").toURI());
+            Desktop.getDesktop().browse(new URL("https://github.com/MatteoMele98/ALGRAPH/blob/master/RELAZIONE.md#algraph").toURI());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (java.net.URISyntaxException e) {
