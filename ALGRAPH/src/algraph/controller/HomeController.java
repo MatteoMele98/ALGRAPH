@@ -395,19 +395,6 @@ public class HomeController {
    //=====================================================================================================
     
    //====================================== MODIFICA GRAFO ===============================================
-
-   private boolean isInteger(TextField input) {
-//	   try {
-//		 Integer weight = Integer.parseInt(input.getText());
-//		 return false;
-//	   } catch (NumberFormatException e) {
-//		   return true;
-//	   }
-	   
-	   Double weight = Double.parseDouble(input.getText());
-	   return weight.isNaN();
-	   
-   }
     
     @FXML
     void handleMenuItem_RandomGraph(ActionEvent event) throws Exception {
@@ -488,7 +475,7 @@ public class HomeController {
     void handleMenuItem_InsertEdge(ActionEvent event) throws Exception {
         Integer weight = Integer.parseInt(this.peso.getText());
 
-        if(weight > 30 || weight < -30 || isInteger(this.peso)) {
+        if(weight > 30 || weight < -30) {
         	Alert alert = new Alert(AlertType.ERROR);
         	alert.setTitle("Error Dialog");
         	alert.setHeaderText("Inserimento arco");
