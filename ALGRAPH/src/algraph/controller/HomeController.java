@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 import algraph.model.NodeModel;
 import algraph.service.AlgorithmHandler;
@@ -438,20 +437,17 @@ public class HomeController {
         	alert.showAndWait();
         } else {
         	this.graphController = new GraphController(numberNodes,false,this);
-        	
-        	this.initComboBox();     	
-        	this.print();
-        	this.graphController.getGraphModel().printMatrix();
         }   	
+        
+        this.initComboBox();     	
+    	this.print();
+    	this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML
     public void handleMenuItem_InsertNode(ActionEvent event) throws Exception {
     	if(graphController.getGraphModel().getCurrentNumberNodes() <= 14) {
     	 		graphController.insertNode();
-    	 		this.print();
-    	 		this.initComboBox();
-    	 		this.graphController.getGraphModel().printMatrix();
     	 } else {
     		Alert alert = new Alert(AlertType.ERROR);
          	alert.setTitle("Error Dialog");
@@ -460,7 +456,9 @@ public class HomeController {
 
          	alert.showAndWait();
     	 }
-    		
+    	this.print();
+ 		this.initComboBox();
+ 		this.graphController.getGraphModel().printMatrix();    		
     }
     
     @FXML
@@ -476,11 +474,11 @@ public class HomeController {
     		int c = this.deleteComboBox.getValue().toString().charAt(0);
         	NodeModel deletedNode = new NodeModel(c-65);
         	graphController.deleteNode(deletedNode);
-        	this.initComboBox();
-        	this.print();
-        	
-        	this.graphController.getGraphModel().printMatrix();
     	}
+    	this.initComboBox();
+    	this.print();
+    	
+    	this.graphController.getGraphModel().printMatrix();
     }  	
 
     /*
@@ -502,24 +500,25 @@ public class HomeController {
         else {
             NodeModel start = new NodeModel(this.edgeCBoxOne.getValue().toString().charAt(0) - 65);
             NodeModel end = new NodeModel(this.edgeCBoxTwo.getValue().toString().charAt(0) - 65);
-            if(start.getLabel() == end.getLabel()) {
+        	EdgeModel newEdge = new EdgeModel(start, end, weight);
+        	
+        	if(newEdge.getStartNode() == newEdge.getEndNode()) {
             	Alert alert = new Alert(AlertType.ERROR);
             	alert.setTitle("Error Dialog");
             	alert.setHeaderText("Inserimento arco");
             	alert.setContentText("Non è possibile inserire un arco tra lo stesso nodo!");
 
             	alert.showAndWait();
-            } else {
-            	EdgeModel newEdge = new EdgeModel(start, end, weight);
-                graphController.insertEdge(newEdge);
-                this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
-
-                this.print();
-                initComboBox();
-                this.peso.setText("");
-                this.graphController.getGraphModel().printMatrix();
-            }
+        	} else {
+        		 graphController.insertEdge(newEdge);
+                 this.graphPane.getChildren().add(this.graphController.getGraphView().getEdge(start.getIndex(), end.getIndex()).printEdge());
+        	}        
+            
         }
+        this.print();
+        initComboBox();
+        this.peso.setText("");
+        this.graphController.getGraphModel().printMatrix();
     }
     
     @FXML

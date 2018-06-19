@@ -43,7 +43,6 @@ public class NodeView {
 		circle.setStrokeWidth(2);
 		
 		this.label = new Text();
-//		this.label.setText(String.valueOf(node.getIndex()));
 		this.label.setText(node.getLabel());
 	 	Font font = new Font("Arial",30);
 	 	this.label.setFill(Color.BLACK);

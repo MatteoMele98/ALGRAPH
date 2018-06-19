@@ -147,12 +147,11 @@ public class AlgorithmHandler extends Thread {
     // A utility function to find the vertex with minimum key
     // value, from the set of vertices not yet included in MST
     private NodeModel minKey() throws InterruptedException {
-    	String s = new String("\nCerco il nodo con priorit√† minima non ancora visitato." + "\n");
-    	System.out.println(s);
     	
+    	String s = new String("\nCerco il nodo con priorit‡† minima non ancora visitato." + "\n");
     	this.pseudoCodeController.addString(s);
 		this.homeController.printPseudoCode();
-    	System.out.println(this.pseudoCodeController.getString());
+    
         
     	// Initialize min value
         Integer min = Integer.MAX_VALUE;
@@ -353,10 +352,15 @@ public class AlgorithmHandler extends Thread {
     	}
 }
 
-	private NodeModel noPauseminKey(){
+	private NodeModel noPauseminKey(boolean v){
 		// Initialize min value
 		Integer min = Integer.MAX_VALUE;
 		NodeModel minNode = null;
+		
+		if(v) {
+			String s = new String("\nCerco il nodo con priorit‡† minima non ancora visitato." + "\n");
+	    	this.pseudoCodeController.addString(s);
+		}
 
 		for (Map.Entry<Integer, NodeModel> node : this.graphM.currentNodesMap.entrySet()) {
 			NodeModel tmp = node.getValue();
@@ -436,7 +440,7 @@ public class AlgorithmHandler extends Thread {
 
 			case 3:
 				//il nodo corrente Ë il nodo con la priorit‡ minima.
-				this.currentNode = noPauseminKey();
+				this.currentNode = noPauseminKey(v);
 
 				StringBuilder s3 = new StringBuilder();
 
